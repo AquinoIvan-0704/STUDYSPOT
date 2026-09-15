@@ -16,3 +16,6 @@ If you don't have Node.js installed:
   ```bash
   node -v
   npm -v
+npm install
+node server.js
+http://localhost:3000
