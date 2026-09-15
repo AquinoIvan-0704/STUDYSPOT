@@ -1,6 +1,8 @@
-
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const User = require('./models/User');
+
 const app = express();
 const PORT = 3000;
 
@@ -18,12 +20,45 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (username === 'admin' && password === 'password') {
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = User.findOne({ username });
+        if (!user) {
+            return res.send('Invalid credentials. <a href="/">Try again</a>');
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.send('Invalid credentials. <a href="/">Try again</a>');
+        }
+
         res.redirect('/studyspot');
-    } else {
-        res.send('Invalid credentials. <a href="/">Try again</a>');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error during login.');
+    }
+});
+
+app.post('/signup', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const existingUser = User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).send('User already exists! <a href="/signup">Try again</a>');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        User.create({ username, password: hashedPassword });
+        
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error during registration.');
     }
 });
 
