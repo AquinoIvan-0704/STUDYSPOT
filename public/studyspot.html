@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
     <title>StudySpot - Find Your Study Space</title>
 </head>
 <body>
@@ -21,20 +22,20 @@
         <section>
             <h2>Find your perfect study spot.</h2>
             <p>Discover quiet and comfortable places to study in your community.</p>
-            <input type="text" placeholder="Search study spots, libraries, cafes...">
-            <button>Search</button>
+         
+            <form action="/spots" method="GET">
+                <input type="text" name="q" placeholder="Search study spots, libraries, cafes..." style="padding: 6px; width: 280px;">
+                <button type="submit">Search</button>
+            </form>
         </section>
 
         <section>
             <h2>Popular Study Spots</h2>
-            <div id="spots-container">
-               <!-- Spots will load here -->
-            </div>
+            <div id="spots-container"></div>
         </section>
     </main>
 
     <script>
-        // Check user role to toggle Add/Request text and admin review link
         fetch('/api/current-user')
             .then(res => res.json())
             .then(user => {
@@ -58,16 +59,18 @@
                 }
             });
 
-        // Fetch and display popular spots on the home page
         fetch('/api/spots')
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('spots-container');
+                if (!container) return;
                 if (data.length === 0) {
                     container.innerHTML = '<p>No study spots available yet.</p>';
                     return;
                 }
-                data.forEach(spot => {
+                container.innerHTML = '';
+                
+                data.slice(0, 3).forEach(spot => {
                     container.innerHTML += `<div><h3>${spot.name}</h3><p>${spot.city}</p><p>${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p><hr></div>`;
                 });
             });

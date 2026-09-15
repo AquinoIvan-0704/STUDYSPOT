@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
     <title>About - StudySpot</title>
 </head>
 <body>
@@ -18,33 +19,21 @@
     </header>
     <main>
         <h2>About StudySpot</h2>
-        <p>Discover quiet and comfortable places to study in your community.</p>
+        <p>Welcome to StudySpot, your ultimate platform for discovering the quietest cafes, best libraries, and most productive workspaces around town.</p>
+        <p>Whether you need high-speed Wi-Fi, absolute silence, or a collaborative table for a group project, StudySpot helps students and remote workers find the ideal environment to focus and get things done.</p>
     </main>
-  <script>
-    fetch('/api/current-user')
-        .then(res => res.json())
-        .then(user => {
-            if (user && user.role !== 'admin') {
-                const links = document.querySelectorAll('nav a');
-                links.forEach(link => {
-                    if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
-                        link.textContent = 'Request Spot';
+
+    <script>
+        fetch('/api/current-user')
+            .then(res => res.json())
+            .then(user => {
+                if (user && user.role === 'admin') {
+                    const nav = document.querySelector('nav');
+                    if (nav && !document.getElementById('review-link')) {
+                        nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
                     }
-                });
-            }
-        });
-        
-    fetch('/api/current-user')
-        .then(res => res.json())
-        .then(user => {
-            if (user && user.role === 'admin') {
-                const nav = document.querySelector('nav');
-                if (nav && !document.getElementById('review-link')) {
-                    nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
                 }
-            }
-        });
-</script>
-</script>
+            });
+    </script>
 </body>
 </html>
