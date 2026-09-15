@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Spot - StudySpot</title>
+    <title>Request Spot - StudySpot</title>
 </head>
 <body>
     <header>
@@ -10,14 +10,15 @@
         <nav>
             <a href="/studyspot">Home</a> | 
             <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
+            <a href="/add-spot">Request Spot</a> | 
             <a href="/about">About</a> | 
             <a href="/contact">Contact</a> | 
             <a href="/">Logout</a>
         </nav>
     </header>
     <main>
-        <h2>Add a New Study Spot</h2>
+        <h2>Request a New Study Spot</h2>
+        <p>Your request will be sent to the admin for review.</p>
         <form action="/api/spots" method="POST">
             <input type="text" name="name" placeholder="Spot Name" required><br><br>
             <input type="text" name="city" placeholder="City / Location" required><br><br>
@@ -36,7 +37,7 @@
                 <option value="Loud">Loud</option>
             </select><br><br>
 
-            <button type="submit">Submit Spot</button>
+            <button type="submit">Submit Request</button>
         </form>
     </main>
 </body>

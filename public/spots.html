@@ -21,13 +21,44 @@
         <div id="all-spots-container"></div>
     </main>
     <script>
-        fetch('/api/spots')
+        // Check user role, update navbar, and fetch spots with admin edit controls
+        fetch('/api/current-user')
             .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('all-spots-container');
-                data.forEach(spot => {
-                    container.innerHTML += `<div><h3>${spot.name}</h3><p>${spot.city}</p><p>${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p><hr></div>`;
-                });
+            .then(user => {
+                if (user) {
+                    const nav = document.querySelector('nav');
+                    const links = document.querySelectorAll('nav a');
+                    
+                    links.forEach(link => {
+                        if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
+                            if (user.role !== 'admin') {
+                                link.textContent = 'Request Spot';
+                            }
+                        }
+                    });
+
+                    if (user.role === 'admin') {
+                        if (!document.getElementById('review-link')) {
+                            nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
+                        }
+                    }
+                }
+
+                // Fetch and display all published spots (with admin edit option if applicable)
+                return fetch('/api/spots')
+                    .then(res => res.json())
+                    .then(data => {
+                        const container = document.getElementById('all-spots-container');
+                        if (data.length === 0) {
+                            container.innerHTML = '<p>No study spots available yet.</p>';
+                            return;
+                        }
+                        container.innerHTML = '';
+                        data.forEach(spot => {
+                            let adminEditBtn = (user && user.role === 'admin') ? ` <a href="/edit-spot/${spot.id}">[Edit]</a>` : '';
+                            container.innerHTML += `<div><h3>${spot.name}${adminEditBtn}</h3><p>${spot.city}</p><p>${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p><hr></div>`;
+                        });
+                    });
             });
     </script>
 </body>

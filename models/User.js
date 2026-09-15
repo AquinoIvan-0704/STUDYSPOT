@@ -26,9 +26,14 @@ const User = {
 
     create: function(userData) {
         const users = this.getAll();
-        users.push(userData);
+        const newUser = {
+            username: userData.username,
+            password: userData.password,
+            role: userData.role || 'user'
+        };
+        users.push(newUser);
         this.saveAll(users);
-        return userData;
+        return newUser;
     }
 };
 

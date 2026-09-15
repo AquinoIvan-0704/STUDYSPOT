@@ -20,5 +20,19 @@
         <h2>About StudySpot</h2>
         <p>Discover quiet and comfortable places to study in your community.</p>
     </main>
+  <script>
+    fetch('/api/current-user')
+        .then(res => res.json())
+        .then(user => {
+            if (user && user.role !== 'admin') {
+                const links = document.querySelectorAll('nav a');
+                links.forEach(link => {
+                    if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
+                        link.textContent = 'Request Spot';
+                    }
+                });
+            }
+        });
+</script>
 </body>
 </html>

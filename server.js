@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const Spot = require('./models/Spot');
 const User = require('./models/User');
+const PendingSpot = require('./models/PendingSpot');
 
 const app = express();
 const PORT = 3000;
@@ -10,13 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const studySpots = [
-    { id: 1, name: 'Community Library', city: 'San Pablo City', seats: 20, wifi: 'Available', noise: 'Quiet' },
-    { id: 2, name: 'Student Study Hub', city: 'City Center', seats: 8, wifi: 'Available', noise: 'Moderate' },
-    { id: 3, name: 'Reading Center', city: 'Barangay Hail', seats: 15, wifi: 'No Wi-Fi', noise: 'Quiet' }
-];
+let currentUser = null;
 
 app.get('/', (req, res) => {
+    currentUser = null;
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
@@ -37,6 +36,7 @@ app.post('/login', async (req, res) => {
             return res.send('Invalid credentials. <a href="/">Try again</a>');
         }
 
+        currentUser = user;
         res.redirect('/studyspot');
     } catch (err) {
         console.error(err);
@@ -53,7 +53,7 @@ app.post('/signup', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        User.create({ username, password: hashedPassword });
+        User.create({ username, password: hashedPassword, role: 'user' });
         
         res.redirect('/');
     } catch (err) {
@@ -71,7 +71,19 @@ app.get('/spots', (req, res) => {
 });
 
 app.get('/add-spot', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'add-spot.html'));
+    if (currentUser && currentUser.role === 'admin') {
+        res.sendFile(path.join(__dirname, 'public', 'add-spot.html'));
+    } else {
+        res.sendFile(path.join(__dirname, 'public', 'request-spot.html'));
+    }
+});
+
+app.get('/admin/pending', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        res.sendFile(path.join(__dirname, 'public', 'admin-pending.html'));
+    } else {
+        res.status(403).send('Access denied. Admins only.');
+    }
 });
 
 app.get('/about', (req, res) => {
@@ -82,11 +94,25 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contact.html'));
 });
 
+app.get('/api/current-user', (req, res) => {
+    res.json(currentUser);
+});
+
 app.get('/api/spots', (req, res) => {
+    const studySpots = Spot.getAll();
     res.json(studySpots);
 });
 
+app.get('/api/pending-spots', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        res.json(PendingSpot.getAll());
+    } else {
+        res.status(403).json([]);
+    }
+});
+
 app.get('/api/search', (req, res) => {
+    const studySpots = Spot.getAll();
     const query = req.query.q ? req.query.q.toLowerCase() : '';
     const filtered = studySpots.filter(spot => 
         spot.name.toLowerCase().includes(query) || 
@@ -96,16 +122,26 @@ app.get('/api/search', (req, res) => {
 });
 
 app.post('/api/spots', (req, res) => {
-    const newSpot = {
-        id: studySpots.length + 1,
-        name: req.body.name,
-        city: req.body.city,
-        seats: req.body.seats,
-        wifi: req.body.wifi,
-        noise: req.body.noise
-    };
-    studySpots.push(newSpot);
-    res.redirect('/spots');
+    if (currentUser && currentUser.role === 'admin') {
+        Spot.create(req.body);
+        res.redirect('/spots');
+    } else {
+        PendingSpot.create(req.body);
+        res.send('Spot request submitted successfully! It is waiting for admin approval. <a href="/studyspot">Back to Home</a>');
+    }
+});
+
+app.post('/api/approve-spot/:id', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        const spotToApprove = PendingSpot.findById(req.params.id);
+        if (spotToApprove) {
+            Spot.create(spotToApprove);
+            PendingSpot.remove(req.params.id);
+        }
+        res.redirect('/admin/pending');
+    } else {
+        res.status(403).send('Access denied.');
+    }
 });
 
 app.listen(PORT, () => {

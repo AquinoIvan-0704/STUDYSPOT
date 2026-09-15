@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Community Library",
+    "city": "San Pablo City",
+    "seats": 20,
+    "wifi": "Available",
+    "noise": "Quiet"
+  },
+  {
+    "id": 2,
+    "name": "Student Study Hub",
+    "city": "City Center",
+    "seats": 8,
+    "wifi": "Available",
+    "noise": "Moderate"
+  },
+  {
+    "id": 3,
+    "name": "Reading Center",
+    "city": "Barangay Hail",
+    "seats": 15,
+    "wifi": "No Wi-Fi",
+    "noise": "Quiet"
+  },
+  {
+    "id": 4,
+    "name": "Sheesh",
+    "city": "San Pablo",
+    "seats": 11,
+    "wifi": "Available",
+    "noise": "Quiet"
+  },
+  {
+    "id": 5,
+    "name": "idk",
+    "city": "idk",
+    "seats": 1,
+    "wifi": "Available",
+    "noise": "Quiet"
+  },
+  {
+    "id": 6,
+    "name": "idk2",
+    "city": "idk2",
+    "seats": 0,
+    "wifi": "Available",
+    "noise": "Quiet"
+  }
+]

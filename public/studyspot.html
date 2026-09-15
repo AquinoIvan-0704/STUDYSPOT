@@ -8,13 +8,13 @@
     <header>
         <h1>StudySpot</h1>
         <nav>
-    <a href="/studyspot">Home</a> | 
-    <a href="/spots">Spots</a> | 
-    <a href="/add-spot">Add Spot</a> | 
-    <a href="/about">About</a> | 
-    <a href="/contact">Contact</a> | 
-    <a href="/">Logout</a>
-</nav>
+            <a href="/studyspot">Home</a> | 
+            <a href="/spots">Spots</a> | 
+            <a href="/add-spot">Add Spot</a> | 
+            <a href="/about">About</a> | 
+            <a href="/contact">Contact</a> | 
+            <a href="/">Logout</a>
+        </nav>
     </header>
 
     <main>
@@ -28,11 +28,49 @@
         <section>
             <h2>Popular Study Spots</h2>
             <div id="spots-container">
-                <!-- Dynamic results will load here -->
+               <!-- Spots will load here -->
             </div>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // Check user role to toggle Add/Request text and admin review link
+        fetch('/api/current-user')
+            .then(res => res.json())
+            .then(user => {
+                if (user) {
+                    const nav = document.querySelector('nav');
+                    const links = document.querySelectorAll('nav a');
+                    
+                    links.forEach(link => {
+                        if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
+                            if (user.role !== 'admin') {
+                                link.textContent = 'Request Spot';
+                            }
+                        }
+                    });
+
+                    if (user.role === 'admin') {
+                        if (!document.getElementById('review-link')) {
+                            nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
+                        }
+                    }
+                }
+            });
+
+        // Fetch and display popular spots on the home page
+        fetch('/api/spots')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('spots-container');
+                if (data.length === 0) {
+                    container.innerHTML = '<p>No study spots available yet.</p>';
+                    return;
+                }
+                data.forEach(spot => {
+                    container.innerHTML += `<div><h3>${spot.name}</h3><p>${spot.city}</p><p>${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p><hr></div>`;
+                });
+            });
+    </script>
 </body>
 </html>
