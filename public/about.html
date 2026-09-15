@@ -33,6 +33,18 @@
                 });
             }
         });
+        
+    fetch('/api/current-user')
+        .then(res => res.json())
+        .then(user => {
+            if (user && user.role === 'admin') {
+                const nav = document.querySelector('nav');
+                if (nav && !document.getElementById('review-link')) {
+                    nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
+                }
+            }
+        });
+</script>
 </script>
 </body>
 </html>

@@ -17,6 +17,35 @@ const Spot = {
         fs.writeFileSync(SPOTS_FILE, JSON.stringify(spots, null, 2));
     },
 
+    findById: function(id) {
+        const spots = this.getAll();
+        return spots.find(spot => spot.id == id);
+    },
+
+    update: function(id, updatedData) {
+        let spots = this.getAll();
+        spots = spots.map(spot => {
+            if (spot.id == id) {
+                return {
+                    ...spot,
+                    name: updatedData.name,
+                    city: updatedData.city,
+                    seats: Number(updatedData.seats),
+                    wifi: updatedData.wifi,
+                    noise: updatedData.noise
+                };
+            }
+            return spot;
+        });
+        this.saveAll(spots);
+    },
+
+    remove: function(id) {
+        let spots = this.getAll();
+        spots = spots.filter(spot => spot.id != id);
+        this.saveAll(spots);
+    },
+
     create: function(spotData) {
         const spots = this.getAll();
         

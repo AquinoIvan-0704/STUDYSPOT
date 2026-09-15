@@ -30,21 +30,5 @@
     "seats": 11,
     "wifi": "Available",
     "noise": "Quiet"
-  },
-  {
-    "id": 5,
-    "name": "idk",
-    "city": "idk",
-    "seats": 1,
-    "wifi": "Available",
-    "noise": "Quiet"
-  },
-  {
-    "id": 6,
-    "name": "idk2",
-    "city": "idk2",
-    "seats": 0,
-    "wifi": "Available",
-    "noise": "Quiet"
   }
 ]

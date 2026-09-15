@@ -6,7 +6,7 @@ const User = require('./models/User');
 const PendingSpot = require('./models/PendingSpot');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -121,6 +121,42 @@ app.get('/api/search', (req, res) => {
     res.json(filtered);
 });
 
+app.get('/edit-spot/:id', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        res.sendFile(path.join(__dirname, 'public', 'edit-spot.html'));
+    } else {
+        res.status(403).send('Access denied.');
+    }
+});
+
+app.get('/api/spot/:id', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        const spot = Spot.findById(req.params.id);
+        res.json(spot || {});
+    } else {
+        res.status(403).json({});
+    }
+});
+
+app.post('/api/edit-spot/:id', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        Spot.update(req.params.id, req.body);
+        res.redirect('/spots');
+    } else {
+        res.status(403).send('Access denied.');
+    }
+});
+
+app.post('/api/delete-spot/:id', (req, res) => {
+    console.log("Decline route hit for ID:", req.params.id);
+    if (currentUser && currentUser.role === 'admin') {
+        Spot.remove(req.params.id);
+        res.redirect('/spots');
+    } else {
+        res.status(403).send('Access denied.');
+    }
+});
+
 app.post('/api/spots', (req, res) => {
     if (currentUser && currentUser.role === 'admin') {
         Spot.create(req.body);
@@ -138,6 +174,15 @@ app.post('/api/approve-spot/:id', (req, res) => {
             Spot.create(spotToApprove);
             PendingSpot.remove(req.params.id);
         }
+        res.redirect('/admin/pending');
+    } else {
+        res.status(403).send('Access denied.');
+    }
+});
+
+app.post('/api/decline-spot/:id', (req, res) => {
+    if (currentUser && currentUser.role === 'admin') {
+        PendingSpot.remove(req.params.id);
         res.redirect('/admin/pending');
     } else {
         res.status(403).send('Access denied.');

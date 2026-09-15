@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Spot - StudySpot Admin</title>
+</head>
+<body>
+    <header>
+        <h1>StudySpot Admin</h1>
+        <nav>
+            <a href="/studyspot">Home</a> | 
+            <a href="/spots">Spots</a> | 
+            <a href="/add-spot">Add Spot</a> | 
+            <a href="/admin/pending">Review Requests</a> | 
+            <a href="/about">About</a> | 
+            <a href="/contact">Contact</a> | 
+            <a href="/">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Edit Study Spot</h2>
+        <form id="edit-form" method="POST">
+            <label>Name: <input type="text" name="name" id="name" required></label><br><br>
+            <label>City: <input type="text" name="city" id="city" required></label><br><br>
+            <label>Seats: <input type="number" name="seats" id="seats" required></label><br><br>
+            <label>Wi-Fi: 
+                <select name="wifi" id="wifi">
+                    <option value="Available">Available</option>
+                    <option value="No Wi-Fi">No Wi-Fi</option>
+                </select>
+            </label><br><br>
+            <label>Noise: 
+                <select name="noise" id="noise">
+                    <option value="Quiet">Quiet</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Loud">Loud</option>
+                </select>
+            </label><br><br>
+            <button type="submit">Update Spot</button>
+        </form>
+    </main>
+
+    <script>
+        const spotId = window.location.pathname.split('/').pop();
+        document.getElementById('edit-form').action = `/api/edit-spot/${spotId}`;
+
+        fetch(`/api/spot/${spotId}`)
+            .then(res => res.json())
+            .then(spot => {
+                if (spot && spot.name) {
+                    document.getElementById('name').value = spot.name;
+                    document.getElementById('city').value = spot.city;
+                    document.getElementById('seats').value = spot.seats;
+                    document.getElementById('wifi').value = spot.wifi;
+                    document.getElementById('noise').value = spot.noise;
+                }
+            });
+    </script>
+</body>
+</html>

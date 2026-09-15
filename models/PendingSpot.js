@@ -1,4 +1,3 @@
-
 const path = require('path');
 const fs = require('fs');
 
@@ -18,50 +17,30 @@ const PendingSpot = {
         fs.writeFileSync(PENDING_FILE, JSON.stringify(spots, null, 2));
     },
 
+    findById: function(id) {
+        const spots = this.getAll();
+        return spots.find(spot => spot.id == id);
+    },
+
+    remove: function(id) {
+        let spots = this.getAll();
+        spots = spots.filter(spot => spot.id != id);
+        this.saveAll(spots);
+    },
+
     create: function(spotData) {
         const spots = this.getAll();
-        
-        let wifiChoice = 'No Wi-Fi';
-        if (spotData.wifi && spotData.wifi.toLowerCase() === 'available') {
-            wifiChoice = 'Available';
-        }
-
-        let noiseChoice = 'Moderate';
-        if (spotData.noise) {
-            const lowerNoise = spotData.noise.toLowerCase();
-            if (lowerNoise.includes('quiet')) {
-                noiseChoice = 'Quiet';
-            } else if (lowerNoise.includes('loud')) {
-                noiseChoice = 'Loud';
-            } else if (lowerNoise.includes('moderate')) {
-                noiseChoice = 'Moderate';
-            }
-        }
-
         const newSpot = {
             id: Date.now(),
             name: spotData.name,
             city: spotData.city,
             seats: Number(spotData.seats),
-            wifi: wifiChoice,
-            noise: noiseChoice,
-            submittedBy: spotData.submittedBy || 'User'
+            wifi: spotData.wifi || 'No Wi-Fi',
+            noise: spotData.noise || 'Moderate'
         };
-        
         spots.push(newSpot);
         this.saveAll(spots);
         return newSpot;
-    },
-
-    remove: function(id) {
-        let spots = this.getAll();
-        spots = spots.filter(spot => spot.id !== Number(id));
-        this.saveAll(spots);
-    },
-
-    findById: function(id) {
-        const spots = this.getAll();
-        return spots.find(spot => spot.id === Number(id));
     }
 };
 

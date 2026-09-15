@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pending Requests - StudySpot Admin</title>
+    <title>Review Requests - StudySpot Admin</title>
 </head>
 <body>
     <header>
@@ -19,40 +19,35 @@
     </header>
     <main>
         <h2>Pending Spot Requests</h2>
-        <div id="pending-list">Loading requests...</div>
+        <div id="pending-container"></div>
     </main>
 
     <script>
-        async function loadPendingSpots() {
-            const response = await fetch('/api/pending-spots');
-            const spots = await response.json();
-            const container = document.getElementById('pending-list');
-            
-            if (spots.length === 0) {
-                container.innerHTML = '<p>No pending requests right now.</p>';
-                return;
-            }
-
-            let html = '<table border="1"><tr><th>Name</th><th>City</th><th>Seats</th><th>Wi-Fi</th><th>Noise</th><th>Action</th></tr>';
-            spots.forEach(spot => {
-                html += `<tr>
-                    <td>${spot.name}</td>
-                    <td>${spot.city}</td>
-                    <td>${spot.seats}</td>
-                    <td>${spot.wifi}</td>
-                    <td>${spot.noise}</td>
-                    <td>
-                        <form action="/api/approve-spot/${spot.id}" method="POST" style="display:inline;">
-                            <button type="submit">Approve & Add</button>
-                        </form>
-                    </td>
-                </tr>`;
+        fetch('/api/pending-spots')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('pending-container');
+                if (data.length === 0) {
+                    container.innerHTML = '<p>No pending spot requests.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                data.forEach(spot => {
+                    container.innerHTML += `
+                        <div>
+                            <h3>${spot.name}</h3>
+                            <p>City: ${spot.city} | Seats: ${spot.seats} | Wi-Fi: ${spot.wifi} | Noise: ${spot.noise}</p>
+                            <form action="/api/approve-spot/${spot.id}" method="POST" style="display:inline;">
+                                <button type="submit">Approve</button>
+                            </form>
+                            <form action="/api/decline-spot/${spot.id}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure you want to decline this request?');">Decline</button>
+                            </form>
+                            <hr>
+                        </div>
+                    `;
+                });
             });
-            html += '</table>';
-            container.innerHTML = html;
-        }
-
-        loadPendingSpots();
     </script>
 </body>
 </html>
