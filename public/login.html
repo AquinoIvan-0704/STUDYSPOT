@@ -6,20 +6,98 @@
     <title>Login - StudySpot</title>
 </head>
 <body>
-    <h2>Login to StudySpot</h2>
-    <form action="/login" method="POST">
-        <div>
-            <label>Username:</label>
-            <input type="text" name="username" required>
-        </div>
-        <br>
-        <div>
-            <label>Password:</label>
-            <input type="password" name="password" required>
-        </div>
-        <br>
-        <button type="submit">Login</button>
+
+<div class="container" id="container">
+
+  <!-- SIGN UP FORM -->
+  <div class="form-panel sign-up">
+    <form action="/signup" method="POST">
+      <h2>Create Account</h2>
+      <label>Username:</label>
+      <input type="text" name="username" required>
+      <label>Password:</label>
+      <input type="password" name="password" required>
+      <button type="submit">Register</button>
     </form>
-    <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+  </div>
+
+  <!-- SIGN IN FORM -->
+  <div class="form-panel sign-in" style="left:50%;">
+    <form action="/login" method="POST">
+      <h2>Login to StudySpot</h2>
+      <label>Username:</label>
+      <input type="text" name="username" required>
+      <label>Password:</label>
+      <input type="password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- COLOR ONLY: expands / covers / shrinks -->
+  <div class="cover-panel parked-left" id="coverPanel"></div>
+
+  <!-- TEXT: fixed position, just fades/slides in and out -->
+  <div class="overlay-text login-text visible" id="loginText">
+    <h2>Hello, Welcome</h2>
+    <p>Don't have an account?</p>
+    <button id="signUpBtn">Register</button>
+  </div>
+  <div class="overlay-text signup-text" id="signupText">
+    <h2>Welcome Back!</h2>
+    <p>Already have an account?</p>
+    <button id="signInBtn">Login</button>
+  </div>
+
+</div>
+
+<script>
+  const container   = document.getElementById('container');
+  const coverPanel  = document.getElementById('coverPanel');
+  const loginText   = document.getElementById('loginText');
+  const signupText  = document.getElementById('signupText');
+  const signUpBtn   = document.getElementById('signUpBtn');
+  const signInBtn   = document.getElementById('signInBtn');
+
+  let animating = false;
+  const PHASE_MS = 600; // must match the 0.6s in .cover-panel transition
+
+  function goToSignUp() {
+    if (animating || container.classList.contains('right-panel-active')) return;
+    animating = true;
+
+    container.classList.add('right-panel-active');
+    loginText.classList.remove('visible');   // "Hello, Welcome" fades/slides out
+    coverPanel.classList.remove('parked-left');
+    coverPanel.classList.add('covering');     // phase 1: expand to 100% + darken
+
+    setTimeout(() => {
+      coverPanel.classList.remove('covering');
+      coverPanel.classList.add('parked-right'); // phase 2: shrink to right, stays dark
+      signupText.classList.add('visible');      // "Welcome Back!" fades/slides in
+      animating = false;
+    }, PHASE_MS);
+  }
+
+  function goToSignIn() {
+    if (animating || !container.classList.contains('right-panel-active')) return;
+    animating = true;
+
+    container.classList.remove('right-panel-active');
+    signupText.classList.remove('visible');
+    coverPanel.classList.remove('parked-right');
+    coverPanel.classList.add('covering');     // expand to 100% (still dark for now)
+
+    setTimeout(() => {
+      coverPanel.classList.remove('covering');
+      coverPanel.classList.add('parked-left'); // shrink to left, fades back to light cyan
+      loginText.classList.add('visible');
+      animating = false;
+    }, PHASE_MS);
+  }
+
+  signUpBtn.addEventListener('click', goToSignUp);
+  signInBtn.addEventListener('click', goToSignIn);
+</script>
+
 </body>
 </html>
