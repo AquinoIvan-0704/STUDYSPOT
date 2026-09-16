@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <title>User Profile - StudySpot</title>
+</head>
+<body>
+    <header>
+        <h1>StudySpot</h1>
+        <nav>
+            <a href="/studyspot">Home</a> | 
+            <a href="/spots">Spots</a> | 
+            <a href="/profile">Profile</a> | 
+            <a href="/">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>My Profile</h2>
+        <div id="profile-container"></div>
+    </main>
+    <script>
+        fetch('/api/user-profile')
+            .then(res => res.json())
+            .then(user => {
+                const container = document.getElementById('profile-container');
+                if (!user || !user.username) {
+                    container.innerHTML = '<p>Please log in.</p>';
+                    return;
+                }
+                container.innerHTML = `
+                    <p><strong>Username:</strong> ${user.username}</p>
+                    <p><strong>Role:</strong> ${user.role}</p>
+                `;
+            });
+    </script>
+</body>
+</html>

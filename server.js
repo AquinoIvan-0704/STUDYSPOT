@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const Spot = require('./models/Spot');
 const User = require('./models/User');
 const PendingSpot = require('./models/PendingSpot');
+const Review = require('./models/Review');
 
 const app = express();
 const PORT = 3001;
@@ -187,6 +188,42 @@ app.post('/api/decline-spot/:id', (req, res) => {
     } else {
         res.status(403).send('Access denied.');
     }
+});
+
+app.get('/profile', (req, res) => {
+    if (!currentUser) {
+        return res.redirect('/');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
+
+app.get('/api/user-profile', (req, res) => {
+    if (!currentUser) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    res.json(currentUser);
+});
+
+app.post('/api/spots/:id/reviews', (req, res) => {
+    if (!currentUser) {
+        return res.status(401).send('Unauthorized. <a href="/">Login first</a>');
+    }
+    const spotId = req.params.id;
+    const { rating, comment } = req.body;
+    
+    Review.create({
+        spotId,
+        username: currentUser.username,
+        rating: Number(rating),
+        comment
+    });
+    
+    res.redirect('/spots');
+});
+
+app.get('/api/spots/:id/reviews', (req, res) => {
+    const reviews = Review.getBySpotId(req.params.id);
+    res.json(reviews);
 });
 
 app.listen(PORT, () => {

@@ -43,6 +43,10 @@
                     const nav = document.querySelector('nav');
                     const links = document.querySelectorAll('nav a');
                     
+                    if (!document.getElementById('profile-link')) {
+                        nav.innerHTML += ` | <a href="/profile" id="profile-link">Profile</a>`;
+                    }
+
                     links.forEach(link => {
                         if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
                             if (user.role !== 'admin') {

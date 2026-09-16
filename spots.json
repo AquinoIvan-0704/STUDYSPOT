@@ -30,5 +30,13 @@
     "seats": 11,
     "wifi": "Available",
     "noise": "Quiet"
+  },
+  {
+    "id": 5,
+    "name": "dikoalam",
+    "city": "dikoalam",
+    "seats": 5,
+    "wifi": "Available",
+    "noise": "Quiet"
   }
 ]
