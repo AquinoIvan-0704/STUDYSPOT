@@ -2,64 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css">
     <title>StudySpot - Find Your Study Space</title>
+    <style>
+   
+        body {
+            display: block !important;
+            align-items: initial !important;
+            justify-content: initial !important;
+            overflow: auto !important;
+            padding: 20px;
+        }
+        .dashboard-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 24px;
+            color: #1e3a8a;
+        }
+        header nav a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #334155;
+            font-weight: 500;
+        }
+        header nav a:hover, header nav a.active {
+            color: #2563eb;
+        }
+        .search-section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .search-section form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            max-width: 500px;
+        }
+        .search-section input {
+            flex: 1;
+            margin-bottom: 0 !important;
+        }
+        .spot-card {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
 
-    <main>
-        <section>
-            <h2>Find your perfect study spot.</h2>
-            <p>Discover quiet and comfortable places to study in your community.</p>
-         
-            <form action="/spots" method="GET">
-                <input type="text" name="q" placeholder="Search study spots, libraries, cafes..." style="padding: 6px; width: 280px;">
-                <button type="submit">Search</button>
-            </form>
-        </section>
+    <div class="dashboard-wrapper">
+        <header>
+            <h1>StudySpot</h1>
+            <nav id="main-nav">
+                <a href="/studyspot" class="active">Home</a>
+                <a href="/spots">Spots</a>
+                <a href="/add-spot">Add Spot</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="/">Logout</a>
+            </nav>
+        </header>
 
-        <section>
-            <h2>Popular Study Spots</h2>
-            <div id="spots-container"></div>
-        </section>
-    </main>
+        <main>
+            <section class="search-section">
+                <h2>Find your perfect study spot.</h2>
+                <p style="color: #64748b; font-size: 14px;">Discover quiet and comfortable places to study in your community.</p>
+             
+                <form action="/spots" method="GET">
+                    <input type="text" name="q" placeholder="Search study spots, libraries, cafes..." required>
+                    <button type="submit" style="border-radius: 8px; background: #2563eb; color: white; border: none; padding: 0 20px; cursor: pointer; font-weight: 600;">Search</button>
+                </form>
+            </section>
+
+            <section>
+                <h2 style="margin-bottom: 15px; color: #ffffff;">Popular Study Spots</h2>
+                <div id="spots-container"></div>
+            </section>
+        </main>
+    </div>
 
     <script>
         fetch('/api/current-user')
             .then(res => res.json())
             .then(user => {
-                if (user) {
-                    const nav = document.querySelector('nav');
-                    const links = document.querySelectorAll('nav a');
-                    
-                    if (!document.getElementById('profile-link')) {
-                        nav.innerHTML += ` | <a href="/profile" id="profile-link">Profile</a>`;
+                const nav = document.getElementById('main-nav');
+                if (nav) {
+                    let navContent = `
+                        <a href="/studyspot" class="active">Home</a> 
+                        <a href="/spots">Spots</a> 
+                        <a href="/add-spot">${user && user.role === 'admin' ? 'Add Spot' : 'Request Spot'}</a>
+                    `;
+
+                    if (user && user.role === 'admin') {
+                        navContent += ` <a href="/admin/pending">Review Requests</a>`;
                     }
 
-                    links.forEach(link => {
-                        if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
-                            if (user.role !== 'admin') {
-                                link.textContent = 'Request Spot';
-                            }
-                        }
-                    });
+                    navContent += ` <a href="/about">About</a> <a href="/contact">Contact</a>`;
 
-                    if (user.role === 'admin') {
-                        if (!document.getElementById('review-link')) {
-                            nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
-                        }
+                    if (user) {
+                        navContent += ` <a href="/profile">Profile</a>`;
                     }
+                    navContent += ` <a href="/">Logout</a>`;
+
+                    nav.innerHTML = navContent;
                 }
             });
 
@@ -68,14 +133,20 @@
             .then(data => {
                 const container = document.getElementById('spots-container');
                 if (!container) return;
-                if (data.length === 0) {
-                    container.innerHTML = '<p>No study spots available yet.</p>';
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="spot-card"><p>No study spots available yet.</p></div>';
                     return;
                 }
                 container.innerHTML = '';
                 
                 data.slice(0, 3).forEach(spot => {
-                    container.innerHTML += `<div><h3>${spot.name}</h3><p>${spot.city}</p><p>${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p><hr></div>`;
+                    container.innerHTML += `
+                        <div class="spot-card">
+                            <h3 style="color: #1e293b; margin-bottom: 5px;">${spot.name}</h3>
+                            <p style="color: #64748b; margin-bottom: 8px; font-size: 14px;">${spot.city}</p>
+                            <p style="color: #334155; font-size: 13px;">${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p>
+                        </div>
+                    `;
                 });
             });
     </script>

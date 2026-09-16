@@ -8,25 +8,5 @@
     "username": "Rene Baterbonia",
     "password": "$2b$10$lyX.qWRDNeVL0Vc3SRVkS.UCe6m0tbSlMTRt380f0tkbI0PylSmcK",
     "role": "admin"
-  },
-  {
-    "username": "Tristan",
-    "password": "$2b$10$Ot.BVfnv8IAqG5QoJr4SsuwlzylMZUs9aPpd26.1yheED0JX41cem",
-    "role": "user"
-  },
-  {
-    "username": "Tinapay",
-    "password": "$2b$10$BUE6Dh/voBXuMVYPxZGSrey28.EQxVUXdDq6q2VSoe.b3AQ5wK1Fm",
-    "role": "user"
-  },
-  {
-    "username": "hello",
-    "password": "$2b$10$YaZlJB65bfxieOA0RZ4ZOu7CB1ttQpmeiDNAhflWA/uPe9v1c/1k.",
-    "role": "user"
-  },
-  {
-    "username": "hello1234",
-    "password": "$2b$10$ucIIZLWrWevWyuzstiMnMePIGCUI5k.9cG8GjIFE7MMsy9Q3zuAbS",
-    "role": "user"
   }
 ]

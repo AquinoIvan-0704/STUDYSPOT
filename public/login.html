@@ -2,102 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
-    <title>Login - StudySpot</title>
+    <title>StudySpot - Login / Register</title>
 </head>
 <body>
 
-<div class="container" id="container">
+    <div class="container" id="container">
 
-  <!-- SIGN UP FORM -->
-  <div class="form-panel sign-up">
-    <form action="/signup" method="POST">
-      <h2>Create Account</h2>
-      <label>Username:</label>
-      <input type="text" name="username" required>
-      <label>Password:</label>
-      <input type="password" name="password" required>
-      <button type="submit">Register</button>
-    </form>
-  </div>
+        <div class="form-panel sign-up">
+            <form action="/signup" method="POST">
+                <h2>Registration</h2>
+                <div class="input-box">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+  
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <button type="submit">Register</button>
 
-  <!-- SIGN IN FORM -->
-  <div class="form-panel sign-in" style="left:50%;">
-    <form action="/login" method="POST">
-      <h2>Login to StudySpot</h2>
-      <label>Username:</label>
-      <input type="text" name="username" required>
-      <label>Password:</label>
-      <input type="password" name="password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
+                <div class="social-login">
+                    <p>or register with social platforms</p>
+                    <div class="social-buttons">
+                        <a href="/auth/google" class="social-btn"><i class="fab fa-google"></i></a>
+                        <a href="/auth/facebook" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="/auth/github" class="social-btn"><i class="fab fa-github"></i></a>
+                        <a href="/auth/linkedin" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-  <!-- COLOR ONLY: expands / covers / shrinks -->
-  <div class="cover-panel parked-left" id="coverPanel"></div>
+      
+        <div class="form-panel sign-in">
+            <form action="/login" method="POST">
+                <h2>Login</h2>
+                <div class="input-box">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <button type="submit">Login</button>
 
-  <!-- TEXT: fixed position, just fades/slides in and out -->
-  <div class="overlay-text login-text visible" id="loginText">
-    <h2>Hello, Welcome</h2>
-    <p>Don't have an account?</p>
-    <button id="signUpBtn">Register</button>
-  </div>
-  <div class="overlay-text signup-text" id="signupText">
-    <h2>Welcome Back!</h2>
-    <p>Already have an account?</p>
-    <button id="signInBtn">Login</button>
-  </div>
+                <div class="social-login">
+                    <p>or login with social platforms</p>
+                    <div class="social-buttons">
+                        <a href="/auth/google" class="social-btn"><i class="fab fa-google"></i></a>
+                        <a href="/auth/facebook" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="/auth/github" class="social-btn"><i class="fab fa-github"></i></a>
+                        <a href="/auth/linkedin" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-</div>
+        <div class="cover-panel parked-left" id="coverPanel"></div>
 
-<script>
-  const container   = document.getElementById('container');
-  const coverPanel  = document.getElementById('coverPanel');
-  const loginText   = document.getElementById('loginText');
-  const signupText  = document.getElementById('signupText');
-  const signUpBtn   = document.getElementById('signUpBtn');
-  const signInBtn   = document.getElementById('signInBtn');
+        <div class="overlay-text login-text visible" id="loginText">
+            <h2>Hello, Welcome</h2>
+            <p>Don't have an Account?</p>
+            <button id="signUpBtn" type="button">Register</button>
+        </div>
 
-  let animating = false;
-  const PHASE_MS = 600; // must match the 0.6s in .cover-panel transition
+        <div class="overlay-text signup-text" id="signupText">
+            <h2>Welcome Back!</h2>
+            <p>Already have an Account?</p>
+            <button id="signInBtn" type="button">Login</button>
+        </div>
 
-  function goToSignUp() {
-    if (animating || container.classList.contains('right-panel-active')) return;
-    animating = true;
+    </div>
 
-    container.classList.add('right-panel-active');
-    loginText.classList.remove('visible');   // "Hello, Welcome" fades/slides out
-    coverPanel.classList.remove('parked-left');
-    coverPanel.classList.add('covering');     // phase 1: expand to 100% + darken
+    <script>
+        const container = document.getElementById('container');
+        const coverPanel = document.getElementById('coverPanel');
+        const loginText = document.getElementById('loginText');
+        const signupText = document.getElementById('signupText');
+        const signUpBtn = document.getElementById('signUpBtn');
+        const signInBtn = document.getElementById('signInBtn');
 
-    setTimeout(() => {
-      coverPanel.classList.remove('covering');
-      coverPanel.classList.add('parked-right'); // phase 2: shrink to right, stays dark
-      signupText.classList.add('visible');      // "Welcome Back!" fades/slides in
-      animating = false;
-    }, PHASE_MS);
-  }
+        let animating = false;
+        const PHASE_MS = 600;
 
-  function goToSignIn() {
-    if (animating || !container.classList.contains('right-panel-active')) return;
-    animating = true;
+        function goToSignUp() {
+            if (animating || container.classList.contains('right-panel-active')) return;
+            animating = true;
 
-    container.classList.remove('right-panel-active');
-    signupText.classList.remove('visible');
-    coverPanel.classList.remove('parked-right');
-    coverPanel.classList.add('covering');     // expand to 100% (still dark for now)
+            container.classList.add('right-panel-active');
+            loginText.classList.remove('visible');
+            coverPanel.classList.remove('parked-left');
+            coverPanel.classList.add('covering');
 
-    setTimeout(() => {
-      coverPanel.classList.remove('covering');
-      coverPanel.classList.add('parked-left'); // shrink to left, fades back to light cyan
-      loginText.classList.add('visible');
-      animating = false;
-    }, PHASE_MS);
-  }
+            setTimeout(() => {
+                coverPanel.classList.remove('covering');
+                coverPanel.classList.add('parked-right');
+                signupText.classList.add('visible');
+                animating = false;
+            }, PHASE_MS);
+        }
 
-  signUpBtn.addEventListener('click', goToSignUp);
-  signInBtn.addEventListener('click', goToSignIn);
-</script>
+        function goToSignIn() {
+            if (animating || !container.classList.contains('right-panel-active')) return;
+            animating = true;
 
+            container.classList.remove('right-panel-active');
+            signupText.classList.remove('visible');
+            coverPanel.classList.remove('parked-right');
+            coverPanel.classList.add('covering');
+
+            setTimeout(() => {
+                coverPanel.classList.remove('covering');
+                coverPanel.classList.add('parked-left');
+                loginText.classList.add('visible');
+                animating = false;
+            }, PHASE_MS);
+        }
+
+        signUpBtn.addEventListener('click', goToSignUp);
+        signInBtn.addEventListener('click', goToSignIn);
+    </script>
 </body>
 </html>
