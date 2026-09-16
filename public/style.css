@@ -1,10 +1,52 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 20px;
     background-color: #f8fafc;
-    color: #334155;
+    color: #a5caff;
     line-height: 1.5;
+}
+
+.navbar {
+    height: 82px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8%;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    padding: 11px 17px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    background: #edf4ff;
+    color: #1769e0;
+}
+
+.nav-links a.active {
+    background: #1769e0;
+    color: white;
 }
 
 header {
@@ -20,14 +62,10 @@ h1, h2, h3 {
     margin-top: 0;
 }
 
-nav a {
-    color: #2563eb;
-    text-decoration: none;
-    margin-right: 4px;
-}
-
-nav a:hover {
-    text-decoration: underline;
+.nav{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 input[type="text"] {
