@@ -3,9 +3,10 @@
    Desktop: sliding two-panel card.  Mobile: single stacked card with a toggle.
    ========================================================================== */
 
-body.auth {
+body.auth, body.auth.has-footer {
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     padding: 24px 16px;
     background:
         radial-gradient(60% 70% at 15% 10%, rgba(37,99,235,.35), transparent 60%),
@@ -13,19 +14,20 @@ body.auth {
         linear-gradient(135deg, #0b1224 0%, #131f3d 55%, #0b1224 100%);
 }
 
-.auth-shell { width: 100%; max-width: 960px; }
+.auth-shell { width: 100%; max-width: 980px; }
 
 .auth-brand {
     display: flex; align-items: center; justify-content: center; gap: 10px;
     margin-bottom: 20px;
 }
-.auth-brand .brand-name { color: #fff; }
-.auth-brand .brand-tag { color: #94a3b8; }
+.auth-brand .brand-name { color: #fff; font-size: 21px; font-weight: 800; letter-spacing: -.4px; }
+.auth-brand .brand-name span { color: var(--blue-light); }
+.auth-brand .brand-tag { color: #94a3b8; font-size: 10.5px; margin-top: -3px; }
 
 .auth-card {
     position: relative; overflow: hidden;
     background: var(--card); border-radius: 24px; box-shadow: var(--shadow-lg);
-    min-height: 560px;
+    min-height: 620px;
 }
 
 /* ---- form panels ---- */
@@ -33,18 +35,80 @@ body.auth {
 .auth-panel {
     position: absolute; top: 0; height: 100%; width: 50%; left: 50%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px; text-align: center;
+    padding: 36px 40px; text-align: center; overflow-y: auto;
     transition: transform .6s ease-in-out, opacity .5s ease-in-out;
 }
 .auth-panel form { width: 100%; max-width: 330px; text-align: left; }
-.auth-panel h2 { font-size: 27px; margin-bottom: 6px; text-align: center; }
-.auth-panel .sub { font-size: 13.5px; color: var(--muted); margin-bottom: 22px; text-align: center; }
+.auth-panel h2 { font-size: 27px; margin-bottom: 4px; text-align: center; }
+.auth-panel .sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; text-align: center; }
 
 .auth-panel.register { opacity: 0; z-index: 1; pointer-events: none; }
 .auth-panel.login    { opacity: 1; z-index: 2; }
 
 .auth-card.show-register .auth-panel.login    { transform: translateX(-100%); opacity: 0; pointer-events: none; }
 .auth-card.show-register .auth-panel.register { transform: translateX(-100%); opacity: 1; z-index: 5; pointer-events: auto; }
+
+/* ---- Google button + divider ---- */
+
+.btn-google {
+    background: var(--card); color: var(--ink);
+    border: 1px solid var(--line); font-weight: 600; font-size: 14px;
+    padding: 11px 14px;
+}
+.btn-google:hover { background: var(--line-soft); border-color: #cbd5e1; }
+.google-mark { width: 17px; height: 17px; flex: none; }
+
+.auth-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 14px 0; color: var(--muted); font-size: 12px;
+}
+.auth-divider::before, .auth-divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--line);
+}
+
+/* ---- fields ---- */
+
+.auth-panel .field { margin-bottom: 12px; }
+
+.input-group .reveal {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    padding: 6px; border-radius: 6px; color: #94a3b8; display: flex;
+}
+.input-group .reveal:hover { background: var(--line-soft); color: var(--ink); }
+.input-group .reveal.on { color: var(--blue); }
+.input-group input { padding-right: 42px; }
+
+.field-error { font-size: 12.5px; color: var(--red-ink); margin-top: 5px; }
+input.invalid { border-color: var(--red); }
+input.invalid:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, .14); }
+
+.strength { display: flex; gap: 5px; margin-top: 7px; }
+.strength span { height: 4px; flex: 1; border-radius: 3px; background: var(--line); transition: background .2s; }
+.strength[data-score="1"] span:nth-child(1) { background: var(--red); }
+.strength[data-score="2"] span:nth-child(-n+2) { background: var(--amber); }
+.strength[data-score="3"] span { background: var(--green); }
+
+.auth-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin: 2px 0 14px; flex-wrap: wrap;
+}
+.check { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--slate); }
+.check input { width: auto; }
+.link-btn { font-size: 13px; color: var(--blue); font-weight: 600; }
+.link-btn:hover { color: var(--blue-dark); }
+
+/* ---- messages (float over the card, above the panels) ---- */
+
+#authAlert {
+    position: absolute; left: 50%; top: 14px; transform: translateX(-50%);
+    z-index: 200; width: min(420px, calc(100% - 32px));
+    margin: 0; box-shadow: var(--shadow-md);
+}
+.auth-foot {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    z-index: 200; font-size: 12.5px; color: var(--green-ink); text-align: center;
+    width: min(420px, calc(100% - 32px));
+}
 
 /* ---- sliding cover ---- */
 
@@ -54,9 +118,9 @@ body.auth {
     border-radius: 0 150px 150px 0;
     transition: left .6s ease-in-out, width .6s ease-in-out, border-radius .6s ease-in-out;
 }
-.auth-cover.covering   { left: 0; width: 100%; border-radius: 24px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-.auth-cover.parked-right { left: 50%; width: 50%; border-radius: 150px 0 0 150px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-.auth-cover.parked-left  { left: 0;   width: 50%; border-radius: 0 150px 150px 0;  background: linear-gradient(135deg, #203159 0%, #284fb9 100%); }
+.auth-cover.covering     { left: 0;   width: 100%; border-radius: 24px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+.auth-cover.parked-right { left: 50%; width: 50%;  border-radius: 150px 0 0 150px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+.auth-cover.parked-left  { left: 0;   width: 50%;  border-radius: 0 150px 150px 0;  background: linear-gradient(135deg, #203159 0%, #284fb9 100%); }
 
 .auth-overlay {
     position: absolute; top: 0; height: 100%; width: 50%; z-index: 110;
@@ -87,11 +151,11 @@ body.auth {
 /* ---------- mobile: one stacked card, no sliding ---------- */
 
 @media (max-width: 860px) {
-    .auth-card { min-height: 0; padding: 28px 22px; border-radius: 18px; }
+    .auth-card { min-height: 0; padding: 26px 20px; border-radius: 18px; }
     .auth-cover, .auth-overlay { display: none; }
 
     .auth-panel {
-        position: static; width: 100%; height: auto; padding: 0;
+        position: static; width: 100%; height: auto; padding: 0; overflow: visible;
         transform: none !important; transition: none;
     }
     .auth-panel.register { display: none; opacity: 1; pointer-events: auto; }
@@ -102,10 +166,7 @@ body.auth {
 
     .auth-panel form { max-width: 100%; }
     .auth-switch { display: block; }
-}
 
-/* ui.js adds .has-footer to every page — keep the auth screen centred anyway */
-body.auth.has-footer {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    #authAlert, .auth-foot { position: static; transform: none; width: 100%; margin-bottom: 14px; }
+    .auth-foot { margin: 10px 0 0; }
 }

@@ -1,21 +1,16 @@
 {
   "name": "studyspot",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "StudySpot - find and share study spaces",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "migrate:firebase": "node scripts/migrate-json-to-firebase.js"
+    "emulators": "firebase emulators:start --only auth,firestore"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "dotenv": "^16.4.7",
+    "cookie-parser": "^1.4.6",
     "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "firebase-admin": "^13.5.0",
-    "passport": "^0.7.0",
-    "passport-github2": "^0.1.12",
-    "passport-google-oauth20": "^2.0.0"
+    "firebase-admin": "^12.7.0"
   }
 }

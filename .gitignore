@@ -1,7 +1,8 @@
 node_modules
 .env
+.env.local
 *.msi
+.vercel
 serviceAccount*.json
-*-firebase-adminsdk-*.json
-firebase-service-account.json
-.firebase/
+firebase-debug.log
+firestore-debug.log
