@@ -1,3 +1,7 @@
 node_modules
 .env
 *.msi
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+.firebase/
