@@ -38,7 +38,7 @@
         return `<article class="spot-card${String(spot.id) === String(selectedId) ? ' selected' : ''}" data-id="${SS.esc(spot.id)}">
             ${thumb(spot, index)}
             <div class="spot-body">
-                <h3>${SS.esc(spot.name)}</h3>
+                <h3><a href="/spot/${SS.esc(spot.id)}">${SS.esc(spot.name)}</a></h3>
                 <div class="spot-city">${SS.esc(spot.city)}</div>
                 <div class="facts">
                     <div class="fact">${SS.icon('i-users')}${SS.esc(spot.seats)} seats available</div>
@@ -112,8 +112,8 @@
             <a class="btn btn-primary btn-block" style="margin-top:18px" href="${maps}" target="_blank" rel="noopener">
                 ${SS.icon('i-nav', 'icon-sm')} Get Directions
             </a>
-            <a class="btn btn-ghost btn-block" style="margin-top:8px" href="/spots#spot-${SS.esc(spot.id)}">
-                ${SS.icon('i-star', 'icon-sm')} Reviews &amp; rating
+            <a class="btn btn-ghost btn-block" style="margin-top:8px" href="/spot/${SS.esc(spot.id)}">
+                ${SS.icon('i-chev', 'icon-sm')} Full details &amp; reviews
             </a>
           </div>`;
 

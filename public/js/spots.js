@@ -49,10 +49,10 @@
     function thumb(spot, index) {
         const av = SS.availability(spot.seats);
         const style = spot.image ? ` style="background-image:url('${SS.esc(spot.image)}')"` : '';
-        return `<div class="thumb v${(index % 3) + 1}"${style}>
+        return `<a class="thumb v${(index % 3) + 1}" href="/spot/${SS.esc(spot.id)}"${style}>
                     <span class="badge ${av.cls}">${av.label}</span>
                     ${spot.image ? '' : SS.icon('i-book')}
-                </div>`;
+                </a>`;
     }
 
     function ratingMarkup(spot) {
@@ -142,7 +142,7 @@
             ${thumb(spot, index)}
             <div class="spot-row-main">
                 <div class="spot-row-head">
-                    <h3>${SS.esc(spot.name)}</h3>
+                    <h3><a href="/spot/${SS.esc(spot.id)}">${SS.esc(spot.name)}</a></h3>
                     ${open === true ? '<span class="badge ok">Open now</span>' : ''}
                     ${open === false ? '<span class="badge grey">Closed</span>' : ''}
                     ${adminActions(spot)}
@@ -162,9 +162,11 @@
                     <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener"
                        href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.city)}">
                         ${SS.icon('i-nav', 'icon-sm')} Directions</a>
-                    <button class="btn btn-outline btn-sm" data-toggle-reviews="${SS.esc(spot.id)}">
+                    <button class="btn btn-ghost btn-sm" data-toggle-reviews="${SS.esc(spot.id)}">
                         ${SS.icon('i-star', 'icon-sm')} Reviews (${count})
                     </button>
+                    <a class="btn btn-outline btn-sm" href="/spot/${SS.esc(spot.id)}">
+                        ${SS.icon('i-chev', 'icon-sm')} View Details</a>
                 </div>
 
                 <div class="reviews-block" data-reviews="${SS.esc(spot.id)}" hidden>

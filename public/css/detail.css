@@ -1,0 +1,63 @@
+/* ==========================================================================
+   detail.css — the single-spot page at /spot/:id
+   ========================================================================== */
+
+.detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; align-items: start; }
+
+/* ---------- banner ---------- */
+
+.detail-banner {
+    position: relative; height: 260px; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 22px; box-shadow: var(--shadow-sm);
+    display: flex; align-items: flex-end;
+}
+.detail-banner .thumb {
+    position: absolute; inset: 0; height: 100%; border-radius: 0; margin: 0;
+}
+.detail-banner .banner-text {
+    position: relative; z-index: 3; padding: 22px 24px; width: 100%;
+    background: linear-gradient(180deg, transparent, rgba(2, 6, 23, .82));
+}
+.detail-banner h1 { color: #fff; font-size: 32px; letter-spacing: -.8px; }
+.detail-banner .where {
+    display: flex; align-items: center; gap: 7px;
+    color: #dbeafe; font-size: 14.5px; margin-top: 5px;
+}
+.detail-banner .banner-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+/* ---------- rating summary ---------- */
+
+.rating-summary { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+.rating-score { text-align: center; flex: none; }
+.rating-score .big { font-size: 44px; font-weight: 800; color: var(--ink); line-height: 1; }
+.rating-score .stars { color: var(--star); font-size: 16px; letter-spacing: 2px; margin-top: 4px; }
+.rating-score .count { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.rating-bars { flex: 1 1 200px; min-width: 180px; }
+.rating-bar { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--muted); }
+.rating-bar .track {
+    flex: 1; height: 7px; border-radius: 4px; background: var(--line-soft); overflow: hidden;
+}
+.rating-bar .fill { height: 100%; background: var(--star); border-radius: 4px; }
+.rating-bar .n { width: 20px; text-align: right; }
+
+/* ---------- misc ---------- */
+
+.detail-actions { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+.detail-admin {
+    margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line);
+    display: flex; gap: 9px; flex-wrap: wrap;
+}
+.detail-admin .btn { flex: 1; }
+
+.detail-meta { font-size: 12.5px; color: var(--muted); margin-top: 14px; text-align: center; }
+
+@media (max-width: 1040px) {
+    .detail-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+    .detail-banner { height: 210px; }
+    .detail-banner h1 { font-size: 24px; }
+    .rating-summary { gap: 16px; }
+    .rating-score .big { font-size: 36px; }
+}

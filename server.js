@@ -60,7 +60,23 @@ const page = (file) => path.join(__dirname, 'public', file);
 /** Redirect back with a message the front-end turns into a toast. */
 const flash = (res, url, ok, error) => {
     const q = ok ? `ok=${encodeURIComponent(ok)}` : `error=${encodeURIComponent(error)}`;
-    res.redirect(`${url}${url.includes('?') ? '&' : '?'}${q}`);
+
+    // a #fragment must stay at the very end, after the query string
+    const hashAt = url.indexOf('#');
+    const base = hashAt === -1 ? url : url.slice(0, hashAt);
+    const hash = hashAt === -1 ? ''  : url.slice(hashAt);
+
+    res.redirect(`${base}${base.includes('?') ? '&' : '?'}${q}${hash}`);
+};
+
+/** Send the user back to the page they submitted from, when it's one of ours. */
+const backTo = (req, fallback) => {
+    const ref = req.get('referer') || '';
+    try {
+        const url = new URL(ref, `http://${req.headers.host}`);
+        if (url.host === req.headers.host && url.pathname.startsWith('/')) return url.pathname;
+    } catch (e) { /* ignore a malformed referer */ }
+    return fallback;
 };
 
 const wantsJson = (req) =>
@@ -177,6 +193,7 @@ app.get('/add-spot', requireLogin, (req, res) => {
     res.sendFile(page(isAdmin(req) ? 'add-spot.html' : 'request-spot.html'));
 });
 
+app.get('/spot/:id',      (req, res) => res.sendFile(page('spot-detail.html')));
 app.get('/edit-spot/:id', requireAdmin, (req, res) => res.sendFile(page('edit-spot.html')));
 app.get('/admin/pending', requireAdmin, (req, res) => res.sendFile(page('admin-pending.html')));
 app.get('/admin/users',   requireAdmin, (req, res) => res.sendFile(page('admin-users.html')));
@@ -283,7 +300,9 @@ app.post('/api/spots/:id/reviews', requireLogin, (req, res) => {
         comment: req.body.comment
     });
 
-    flash(res, `/spots#spot-${req.params.id}`, updated ? 'Your review was updated.' : 'Review posted.');
+    const back = backTo(req, `/spot/${req.params.id}`);
+    const target = back === '/spots' ? `/spots#spot-${req.params.id}` : back;
+    flash(res, target, updated ? 'Your review was updated.' : 'Review posted.');
 });
 
 /** A review can be removed by whoever wrote it, or by an admin. */
@@ -295,7 +314,7 @@ app.post('/api/reviews/:id/delete', requireLogin, (req, res) => {
     if (!owner && !isAdmin(req)) return flash(res, '/spots', null, 'You can only delete your own review.');
 
     Review.remove(req.params.id);
-    flash(res, '/spots', 'Review deleted.');
+    flash(res, backTo(req, '/spots'), 'Review deleted.');
 });
 
 /* ==========================================================================

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('studyspot-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<title>Study Spot — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/spots.css">
+<link rel="stylesheet" href="/css/detail.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/spot-detail.js" defer></script>
+</head>
+<body>
+
+<header data-topbar="spots"></header>
+
+<div class="page-head">
+  <div class="shell">
+    <a class="btn btn-ghost" href="/spots">
+      <svg class="icon icon-sm"><use href="#i-back"/></svg> All spots
+    </a>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell">
+
+    <div id="notFound" class="empty hidden">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      That study spot doesn't exist — it may have been deleted.
+      <div style="margin-top:14px"><a class="btn btn-primary" href="/spots">Browse all spots</a></div>
+    </div>
+
+    <div id="detail" class="detail-layout">
+      <div class="skeleton" style="height:420px"></div>
+      <div class="skeleton" style="height:320px"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer data-footer></footer>
+</body>
+</html>

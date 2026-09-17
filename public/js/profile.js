@@ -44,7 +44,7 @@
                 </div>
             </div>
             ${pending ? '' : `<div class="actions">
-                <a class="btn btn-ghost btn-sm" href="/spots#spot-${SS.esc(spot.id)}">
+                <a class="btn btn-ghost btn-sm" href="/spot/${SS.esc(spot.id)}">
                     ${SS.icon('i-chev', 'icon-sm')} View</a>
             </div>`}
         </div>`;

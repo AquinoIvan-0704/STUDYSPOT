@@ -216,3 +216,8 @@
     color: #fff; font-weight: 700; font-size: 18px;
     display: flex; align-items: center; justify-content: center;
 }
+
+/* spot names link to their own page but should look like headings */
+.spot-card h3 a, .spot-row-head h3 a { color: inherit; }
+.spot-card h3 a:hover, .spot-row-head h3 a:hover { color: var(--blue); }
+a.thumb { display: flex; }
