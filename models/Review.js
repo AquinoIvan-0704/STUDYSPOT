@@ -1,115 +1,67 @@
-const path = require('path');
-const fs = require('fs');
+﻿const { getRealtimeDatabase } = require('../lib/firebase-admin');
+const ref = () => getRealtimeDatabase().ref('reviews');
 
-const REVIEWS_FILE = path.join(__dirname, '../data/reviews.json');
-
-/**
- * Reviews are saved to data/reviews.json.
- *
- * Rule: one review per person per spot. Posting again updates the review you
- * already left instead of stacking duplicates, so nobody can inflate a spot's
- * rating by submitting the same form over and over.
- */
 const Review = {
-    getAll: function () {
-        if (!fs.existsSync(REVIEWS_FILE)) {
-            this.saveAll([]);
-            return [];
-        }
-        const data = fs.readFileSync(REVIEWS_FILE, 'utf8');
-        return data ? JSON.parse(data) : [];
+    async getAll() {
+        const snapshot = await ref().once('value');
+        return Object.values(snapshot.val() || {});
     },
-
-    saveAll: function (reviews) {
-        fs.writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
+    async getBySpotId(id) {
+        return (await this.getAll()).filter(review => String(review.spotId) === String(id));
     },
-
-    getBySpotId: function (spotId) {
-        return this.getAll()
-            .filter(r => String(r.spotId) === String(spotId))
-            .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
+    async getByUser(username) {
+        return (await this.getAll()).filter(review =>
+            String(review.username).toLowerCase() === String(username).toLowerCase());
     },
-
-    getByUser: function (username) {
-        if (!username) return [];
-        return this.getAll().filter(r =>
-            String(r.username).toLowerCase() === String(username).toLowerCase());
+    async findById(id) {
+        const snapshot = await ref().child(String(id)).once('value');
+        return snapshot.val() || null;
     },
-
-    findById: function (id) {
-        return this.getAll().find(r => String(r.id) === String(id));
+    async findByUserAndSpot(username, spotId) {
+        return (await this.getAll()).find(review =>
+            String(review.username).toLowerCase() === String(username).toLowerCase() &&
+            String(review.spotId) === String(spotId)) || null;
     },
-
-    /** The review this person already left for this spot, if any. */
-    findByUserAndSpot: function (username, spotId) {
-        if (!username) return null;
-        return this.getAll().find(r =>
-            String(r.spotId) === String(spotId) &&
-            String(r.username).toLowerCase() === String(username).toLowerCase()) || null;
+    async summaryFor(spotId) {
+        const reviews = await this.getBySpotId(spotId);
+        const total = reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0);
+        return {
+            average: reviews.length ? Math.round((total / reviews.length) * 10) / 10 : 0,
+            count: reviews.length
+        };
     },
-
-    summaryFor: function (spotId) {
-        const list = this.getBySpotId(spotId);
-        if (!list.length) return { average: 0, count: 0 };
-        const total = list.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
-        return { average: Math.round((total / list.length) * 10) / 10, count: list.length };
-    },
-
-    /**
-     * Creates the review, or updates the one this user already left.
-     * Returns { review, updated } so the caller can word the message correctly.
-     */
-    save: function (reviewData) {
-        const reviews = this.getAll();
-        const rating = Math.min(5, Math.max(1, Number(reviewData.rating) || 0));
-        const comment = String(reviewData.comment || '').trim().slice(0, 500);
-        const username = String(reviewData.username || '').trim();
-
-        const existing = reviews.find(r =>
-            String(r.spotId) === String(reviewData.spotId) &&
-            String(r.username).toLowerCase() === username.toLowerCase());
-
+    async save(data) {
+        const rating = Math.min(5, Math.max(1, Number(data.rating) || 0));
+        const comment = String(data.comment || '').trim().slice(0, 500);
+        const existing = await this.findByUserAndSpot(data.username, data.spotId);
         if (existing) {
-            existing.rating = rating;
-            existing.comment = comment;
-            existing.updatedAt = new Date().toISOString();
-            this.saveAll(reviews);
-            return { review: existing, updated: true };
+            const updated = { ...existing, rating, comment, updatedAt: new Date().toISOString() };
+            await ref().child(String(existing.id)).set(updated);
+            return { review: updated, updated: true };
         }
 
-        const newReview = {
-            id: String(Date.now()) + Math.floor(Math.random() * 1000),
-            spotId: String(reviewData.spotId),
-            username: username,
-            rating: rating,
-            comment: comment,
+        const review = {
+            id: `${Date.now()}${Math.floor(Math.random() * 1000)}`,
+            spotId: String(data.spotId),
+            username: String(data.username || '').trim(),
+            rating,
+            comment,
             createdAt: new Date().toISOString()
         };
-        reviews.push(newReview);
-        this.saveAll(reviews);
-        return { review: newReview, updated: false };
+        await ref().child(review.id).set(review);
+        return { review, updated: false };
     },
-
-    remove: function (id) {
-        const reviews = this.getAll();
-        const next = reviews.filter(r => String(r.id) !== String(id));
-        const removed = next.length !== reviews.length;
-        if (removed) this.saveAll(next);
-        return removed;
+    async remove(id) {
+        const review = await this.findById(id);
+        if (!review) return false;
+        await ref().child(String(id)).remove();
+        return true;
     },
-
-    removeBySpotId: function (spotId) {
-        const reviews = this.getAll();
-        const next = reviews.filter(r => String(r.spotId) !== String(spotId));
-        if (next.length !== reviews.length) this.saveAll(next);
+    async removeBySpotId(id) {
+        for (const review of await this.getBySpotId(id)) await this.remove(review.id);
     },
-
-    /** Used when an account is deleted. */
-    removeByUser: function (username) {
-        const reviews = this.getAll();
-        const next = reviews.filter(r =>
-            String(r.username).toLowerCase() !== String(username).toLowerCase());
-        if (next.length !== reviews.length) this.saveAll(next);
+    async removeByUser(username) {
+        for (const review of await this.getByUser(username)) await this.remove(review.id);
     }
 };
 
