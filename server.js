@@ -93,7 +93,20 @@ app.get('/signup', (req, res) => {
 
 app.get('/logout', (req, res) => {
     req.logout(() => {
-        req.session.destroy(() => res.redirect('/?ok=' + encodeURIComponent('Logged out.')));
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid');
+            res.redirect('/?ok=' + encodeURIComponent('Logged out.'));
+        });
+    });
+});
+
+// some browsers / older links may POST to it
+app.post('/logout', (req, res) => {
+    req.logout(() => {
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid');
+            res.redirect('/?ok=' + encodeURIComponent('Logged out.'));
+        });
     });
 });
 
@@ -160,6 +173,7 @@ app.get('/add-spot', requireLogin, (req, res) => {
 app.get('/edit-spot/:id', requireAdmin, (req, res) => res.sendFile(page('edit-spot.html')));
 app.get('/admin/pending', requireAdmin, (req, res) => res.sendFile(page('admin-pending.html')));
 app.get('/profile',       requireLogin, (req, res) => res.sendFile(page('profile.html')));
+app.get('/request-sent',  requireLogin, (req, res) => res.sendFile(page('request-sent.html')));
 
 /* ==========================================================================
    API — spots
@@ -198,8 +212,8 @@ app.post('/api/spots', requireLogin, (req, res) => {
         return flash(res, '/spots', 'Study spot added.');
     }
 
-    PendingSpot.create({ ...req.body, submittedBy: req.user.username });
-    return flash(res, '/studyspot', 'Request submitted — an admin will review it.');
+    const created = PendingSpot.create({ ...req.body, submittedBy: req.user.username });
+    return res.redirect(`/request-sent?id=${encodeURIComponent(created.id)}`);
 });
 
 app.post('/api/edit-spot/:id', requireAdmin, (req, res) => {

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request Submitted — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/success.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/request-sent.js" defer></script>
+</head>
+<body>
+
+<header data-topbar="add"></header>
+
+<main class="page-body">
+  <div class="shell success-wrap">
+    <div class="card success-card">
+
+      <div class="success-icon">
+        <svg class="icon"><use href="#i-check"/></svg>
+      </div>
+
+      <h1>Request submitted</h1>
+      <p class="lede">Thanks for helping out. Your spot is in the review queue — an admin will take a look.</p>
+
+      <!-- filled in by request-sent.js from the user's pending requests -->
+      <div class="summary" id="summary" hidden></div>
+
+      <div class="steps">
+        <h3>What happens next</h3>
+
+        <div class="step">
+          <span class="num">1</span>
+          <div class="step-body">
+            <strong>An admin reviews it</strong>
+            <span>They check the details are right before it goes live.</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">2</span>
+          <div class="step-body">
+            <strong>If approved, it gets published</strong>
+            <span>It appears on the Spots page for everyone, and anyone can review it.</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num">3</span>
+          <div class="step-body">
+            <strong>Track it on your profile</strong>
+            <span>It sits under “My spot requests” until it's approved, then moves to “Spots I added”.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a class="btn btn-primary" href="/add-spot">
+          <svg class="icon icon-sm"><use href="#i-plus"/></svg> Request another spot
+        </a>
+        <a class="btn btn-ghost" href="/profile">
+          <svg class="icon icon-sm"><use href="#i-user"/></svg> My requests
+        </a>
+        <a class="btn btn-ghost" href="/spots">Browse spots</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer data-footer></footer>
+</body>
+</html>
