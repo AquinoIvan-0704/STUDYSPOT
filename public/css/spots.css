@@ -1,6 +1,3 @@
-/* ==========================================================================
-   spots.css — the full "All study spots" listing page
-   ========================================================================== */
 
 .list-toolbar {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;

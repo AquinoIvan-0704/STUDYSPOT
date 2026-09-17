@@ -1,13 +1,4 @@
-/* ==========================================================================
-   style.css — kept for backwards compatibility.
-   The real styles now live in /css/*.css:
-       base.css        tokens, reset, buttons, forms
-       layout.css      topbar, page shell, footer
-       components.css  cards, spot grid, panels, reviews
-       home.css        dashboard hero
-       auth.css        login / register screen
-   New pages should link the individual files instead of this one.
-   ========================================================================== */
+
 
 @import url("/css/base.css");
 @import url("/css/layout.css");

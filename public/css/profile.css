@@ -1,6 +1,4 @@
-/* ==========================================================================
-   profile.css — account page
-   ========================================================================== */
+
 
 .profile-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
 

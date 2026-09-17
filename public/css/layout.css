@@ -1,6 +1,4 @@
-/* ==========================================================================
-   layout.css — page shell, top navigation, page header, footer
-   ========================================================================== */
+
 
 .shell { max-width: 1400px; margin: 0 auto; padding: 0 28px; }
 .shell-narrow { max-width: 860px; }
@@ -74,15 +72,14 @@
 .site-footer nav a { color: var(--muted); }
 .site-footer nav a:hover { color: var(--blue); }
 
-/* keeps the footer at the bottom on short pages */
+
 body.has-footer { display: flex; flex-direction: column; }
 body.has-footer .page-body,
 body.has-footer main { flex: 1 0 auto; }
 
-/* ---------- responsive ---------- */
 
 @media (max-width: 900px) {
-    /* nav becomes a horizontally scrollable strip instead of disappearing */
+   
     .topbar { position: static; }
     .topbar-inner { flex-wrap: wrap; height: auto; padding: 12px 0 8px; gap: 12px; }
     .mainnav {

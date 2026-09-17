@@ -281,7 +281,7 @@ app.post('/api/spots/:id/reviews', requireLogin, (req, res) => {
 
     const back = backTo(req, `/spot/${req.params.id}`);
     const target = back === '/spots' ? `/spots#spot-${req.params.id}` : back;
-    flash(res, target, updated ? 'Your review was updated.' : 'Review posted.');
+    flash(res, target, updated ? 'Your review was updated.' : 'Review posted.');s
 });
 
 /** A review can be removed by whoever wrote it, or by an admin. */

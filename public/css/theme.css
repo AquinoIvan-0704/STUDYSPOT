@@ -1,15 +1,3 @@
-/* ==========================================================================
-   theme.css — dark mode
-   Loaded right after base.css. Everything here just re-points the design
-   tokens, so no component needs its own dark rules.
-
-   Three states:
-     data-theme="dark"   -> forced dark
-     data-theme="light"  -> forced light
-     no attribute        -> follow the operating system
-   ========================================================================== */
-
-/* ---------- the dark palette, written once ---------- */
 
 :root[data-theme="dark"] {
     --blue:        #3b82f6;
@@ -44,7 +32,6 @@
     color-scheme: dark;
 }
 
-/* same palette again, for people whose OS is dark and who haven't chosen */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         --blue:        #3b82f6;
