@@ -170,53 +170,63 @@ app.post('/signup', async (req, res) => {
             req.session.save(() => res.redirect('/studyspot?ok=' + encodeURIComponent('Account created. Welcome!')));
         });
 
-        app.get('/api/firebase-config', (req, res) => {
-            const projectId = process.env.FIREBASE_PROJECT_ID;
-            if (!projectId) return res.status(503).json({ error: 'Firebase is not configured.' });
-            res.json({
-                apiKey: process.env.FIREBASE_API_KEY || '',
-                authDomain: process.env.FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
-                projectId,
-                storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${projectId}.firebasestorage.app`,
-                messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
-                appId: process.env.FIREBASE_APP_ID || ''
-            });
-        });
-
-        app.post('/api/firebase-session', async (req, res) => {
-            try {
-                const header = req.get('authorization') || '';
-                if (!header.startsWith('Bearer ')) return res.status(401).json({ error: 'Missing Firebase token.' });
-                const decoded = await getFirebaseAdmin().auth().verifyIdToken(header.slice(7));
-                const email = String(decoded.email || '').trim().toLowerCase();
-                if (!email) return res.status(400).json({ error: 'Firebase account has no email address.' });
-
-                const existing = await User.findOne({ email });
-                const username = existing
-                    ? existing.username
-                    : String(decoded.name || email.split('@')[0]).trim().slice(0, 30);
-                const user = existing || await User.create({
-                    username,
-                    email,
-                    password: '',
-                    role: email === ADMIN_EMAIL ? 'admin' : 'user'
-                });
-
-                req.login(User.safe(user), (error) => {
-                    if (error) return res.status(500).json({ error: 'Could not create a session.' });
-                    req.session.save((saveError) => {
-                        if (saveError) return res.status(500).json({ error: 'Could not save the session.' });
-                        res.json({ user: User.safe(user) });
-                    });
-                });
-            } catch (error) {
-                console.error(error);
-                res.status(401).json({ error: 'Invalid Firebase token.' });
-            }
-        });
     } catch (err) {
         console.error(err);
         flash(res, '/signup', null, 'Server error during registration.');
+    }
+});
+
+app.get('/api/firebase-config', (req, res) => {
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    if (!projectId) return res.status(503).json({ error: 'Firebase is not configured.' });
+    res.json({
+        apiKey: process.env.FIREBASE_API_KEY || '',
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
+        projectId,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${projectId}.firebasestorage.app`,
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+        appId: process.env.FIREBASE_APP_ID || ''
+    });
+});
+
+app.post('/api/firebase-session', async (req, res) => {
+    try {
+        const header = req.get('authorization') || '';
+        if (!header.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Missing Firebase token.' });
+        }
+
+        const decoded = await getFirebaseAdmin().auth().verifyIdToken(header.slice(7));
+        const email = String(decoded.email || '').trim().toLowerCase();
+        if (!email) return res.status(400).json({ error: 'Firebase account has no email address.' });
+
+        const existing = await User.findOne({ email });
+        const requestedUsername = String(req.body.username || '').trim();
+        const username = existing
+            ? existing.username
+            : (requestedUsername || String(decoded.name || email.split('@')[0]).trim()).slice(0, 30);
+
+        if (!existing && await User.findOne({ username })) {
+            return res.status(409).json({ error: 'That username is already taken.' });
+        }
+
+        const user = existing || await User.create({
+            username,
+            email,
+            password: '',
+            role: email === ADMIN_EMAIL ? 'admin' : 'user'
+        });
+
+        req.login(User.safe(user), (error) => {
+            if (error) return res.status(500).json({ error: 'Could not create a session.' });
+            req.session.save((saveError) => {
+                if (saveError) return res.status(500).json({ error: 'Could not save the session.' });
+                res.json({ user: User.safe(user) });
+            });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(401).json({ error: 'Invalid Firebase token.' });
     }
 });
 

@@ -17,7 +17,13 @@ async function startFirebaseAuth() {
         const token = await user.getIdToken();
         const response = await fetch('/api/firebase-session', {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: document.getElementById('reg-username')?.value.trim() || ''
+            })
         });
         if (!response.ok) {
             const body = await response.json().catch(() => ({}));
@@ -48,6 +54,9 @@ async function startFirebaseAuth() {
         event.preventDefault();
         const email = document.getElementById('reg-email').value.trim();
         if (!email) return SS.toast('Email is required for Firebase authentication.', 'error');
+        if (document.getElementById('reg-confirm').value !== document.getElementById('reg-password').value) {
+            return SS.toast('The two passwords do not match.', 'error');
+        }
         try {
             const result = await createUserWithEmailAndPassword(
                 auth,
