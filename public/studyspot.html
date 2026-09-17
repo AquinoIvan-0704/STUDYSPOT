@@ -1,154 +1,784 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css">
-    <title>StudySpot - Find Your Study Space</title>
-    <style>
-   
-        body {
-            display: block !important;
-            align-items: initial !important;
-            justify-content: initial !important;
-            overflow: auto !important;
-            padding: 20px;
-        }
-        .dashboard-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        header h1 {
-            font-size: 24px;
-            color: #1e3a8a;
-        }
-        header nav a {
-            margin-left: 15px;
-            text-decoration: none;
-            color: #334155;
-            font-weight: 500;
-        }
-        header nav a:hover, header nav a.active {
-            color: #2563eb;
-        }
-        .search-section {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        .search-section form {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            max-width: 500px;
-        }
-        .search-section input {
-            flex: 1;
-            margin-bottom: 0 !important;
-        }
-        .spot-card {
-            background: #ffffff;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySpot - Find Your Study Space</title>
+<style>
+/* ============================================================
+   StudySpot dashboard
+   Self-contained styles (does not use /style.css, which is
+   built for the login screen only).
+   ============================================================ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --blue:        #2563eb;
+    --blue-dark:   #1d4ed8;
+    --blue-light:  #60a5fa;
+    --ink:         #0f172a;
+    --slate:       #475569;
+    --muted:       #64748b;
+    --line:        #e2e8f0;
+    --page:        #f1f5f9;
+    --card:        #ffffff;
+    --radius:      14px;
+    --shadow-sm:   0 1px 2px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .05);
+    --shadow-md:   0 4px 6px rgba(15, 23, 42, .05), 0 10px 20px rgba(15, 23, 42, .08);
+    --shadow-lg:   0 10px 15px rgba(15, 23, 42, .08), 0 24px 48px rgba(15, 23, 42, .12);
+}
+
+html, body {
+    height: auto;
+    width: 100%;
+    background: var(--page);
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--slate);
+    line-height: 1.5;
+    display: block;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { color: var(--ink); line-height: 1.25; }
+a { text-decoration: none; color: inherit; }
+button { font: inherit; cursor: pointer; border: none; background: none; }
+.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-sm { width: 15px; height: 15px; }
+
+.shell { max-width: 1400px; margin: 0 auto; padding: 0 28px; }
+
+/* ---------------- Top navigation ---------------- */
+
+.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+    display: flex; align-items: center; gap: 24px;
+    height: 72px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { width: 38px; height: 38px; flex: none; }
+.brand-name { font-size: 21px; font-weight: 800; color: var(--ink); letter-spacing: -.4px; }
+.brand-name span { color: var(--blue); }
+.brand-tag { font-size: 10.5px; color: var(--muted); letter-spacing: .2px; margin-top: -3px; }
+
+.mainnav { display: flex; align-items: center; gap: 4px; margin: 0 auto; }
+.navlink {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 15px; border-radius: 9px;
+    font-size: 14.5px; font-weight: 500; color: var(--slate);
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+}
+.navlink:hover { background: #f1f5f9; color: var(--ink); }
+.navlink.active { background: var(--blue); color: #fff; font-weight: 600; box-shadow: var(--shadow-sm); }
+.navlink.active:hover { background: var(--blue-dark); color: #fff; }
+
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px; border-radius: 9px;
+    border: 1px solid var(--line); background: #fff;
+    font-size: 14px; font-weight: 500; color: var(--slate);
+    transition: border-color .15s, color .15s, background .15s;
+}
+.btn-ghost:hover { border-color: #cbd5e1; background: #f8fafc; color: var(--ink); }
+.btn-icon { padding: 9px; }
+
+/* ---------------- Hero ---------------- */
+
+.hero { position: relative; overflow: hidden; background: #0b1224; }
+.hero-bg { position: absolute; inset: 0; }
+
+/* Library-ish backdrop built from gradients, so the page needs no image files. */
+.hero-shelves {
+    position: absolute; inset: -12% -3% -3% -3%;
+    opacity: .8;
+    background-image:
+        /* shelf boards */
+        repeating-linear-gradient(0deg,
+            rgba(38,24,14,.96) 0 14px, rgba(92,58,34,.75) 14px 17px,
+            rgba(10,14,28,0) 17px 104px),
+        /* book spines */
+        repeating-linear-gradient(90.6deg,
+            rgba(206,152,92,.5) 0 13px, rgba(118,72,42,.55) 13px 25px,
+            rgba(228,190,134,.4) 25px 40px, rgba(84,52,32,.6) 40px 51px,
+            rgba(168,106,60,.45) 51px 68px, rgba(132,84,50,.5) 68px 79px),
+        linear-gradient(180deg, rgba(60,38,22,.5), rgba(18,12,8,.7));
+    filter: blur(1.1px);
+    transform: perspective(900px) rotateY(-4deg) scale(1.04);
+}
+.hero-glow {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(60% 80% at 78% 18%, rgba(255, 214, 150, .35), transparent 62%),
+        radial-gradient(45% 60% at 12% 85%, rgba(37, 99, 235, .28), transparent 70%);
+}
+.hero-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg,
+        rgba(7, 13, 31, .95) 0%, rgba(7, 13, 31, .88) 38%,
+        rgba(7, 13, 31, .62) 70%, rgba(7, 13, 31, .5) 100%);
+}
+
+.hero-inner { position: relative; padding: 62px 0 54px; display: flex; gap: 32px; align-items: flex-start; }
+.hero-copy { max-width: 720px; flex: 1 1 auto; }
+
+.hero h1 {
+    color: #fff; font-size: 52px; font-weight: 800;
+    letter-spacing: -1.4px; line-height: 1.08; margin-bottom: 14px;
+}
+.hero h1 em { font-style: normal; color: var(--blue-light); display: block; }
+.hero p.lede { color: #cbd5e1; font-size: 16.5px; max-width: 430px; margin-bottom: 26px; }
+
+.searchbar {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 12px; padding: 7px 7px 7px 16px;
+    box-shadow: var(--shadow-lg); max-width: 720px;
+}
+.searchbar .icon { color: var(--muted); }
+.searchbar input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 15px; color: var(--ink); padding: 12px 0;
+}
+.searchbar input::placeholder { color: #94a3b8; }
+.btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--blue); color: #fff; font-weight: 600; font-size: 15px;
+    padding: 13px 30px; border-radius: 9px;
+    transition: background .15s, transform .1s;
+}
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:active { transform: translateY(1px); }
+
+.hero-chips { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 22px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; color: #dbeafe; font-size: 14px; font-weight: 500; }
+.chip .icon { color: var(--blue-light); }
+
+.statcard {
+    flex: none; width: 212px; margin: 6px 0 0 auto;
+    background: #fff; border-radius: var(--radius);
+    padding: 20px 22px; box-shadow: var(--shadow-lg);
+}
+.statcard .row { display: flex; align-items: center; gap: 12px; }
+.statcard .icon { width: 26px; height: 26px; color: var(--blue); }
+.statcard .num { font-size: 34px; font-weight: 800; color: var(--blue); line-height: 1; }
+.statcard .lbl { font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 8px; }
+.statcard .sub { font-size: 13px; color: var(--muted); }
+
+/* ---------------- Main layout ---------------- */
+
+.main { padding: 30px 0 60px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 24px; align-items: start; }
+
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.section-head h2 { font-size: 21px; font-weight: 700; letter-spacing: -.3px; }
+.section-head .icon { color: var(--blue); width: 20px; height: 20px; }
+.viewall {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    color: var(--blue); font-size: 14px; font-weight: 600;
+}
+.viewall:hover { color: var(--blue-dark); }
+
+/* ---------------- Spot cards ---------------- */
+
+.spot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 20px; }
+
+.spot-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; text-align: left;
+    transition: box-shadow .18s, transform .18s, border-color .18s;
+}
+.spot-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: #cbd5e1; }
+.spot-card.selected { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37, 99, 235, .18), var(--shadow-md); }
+
+.thumb {
+    position: relative; height: 128px; flex: none;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb 55%, #0ea5e9);
+    display: flex; align-items: center; justify-content: center;
+    background-size: cover; background-position: center;
+}
+.thumb.v1 { background-image: linear-gradient(135deg, #1e3a8a, #3b82f6 55%, #38bdf8); }
+.thumb.v2 { background-image: linear-gradient(135deg, #0f766e, #0ea5e9 60%, #7dd3fc); }
+.thumb.v3 { background-image: linear-gradient(135deg, #3730a3, #6366f1 55%, #a5b4fc); }
+.thumb::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+        repeating-linear-gradient(92deg,
+            rgba(255,255,255,.10) 0 9px, rgba(255,255,255,0) 9px 20px),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(2,6,23,.32));
+}
+.thumb .icon { width: 40px; height: 40px; color: rgba(255,255,255,.85); position: relative; z-index: 1; stroke-width: 1.5; }
+
+.badge {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+    box-shadow: var(--shadow-sm);
+}
+.badge.ok    { background: #22c55e; color: #fff; }
+.badge.warn  { background: #f59e0b; color: #fff; }
+.badge.full  { background: #ef4444; color: #fff; }
+
+.spot-body { padding: 15px 16px 0; flex: 1; }
+.spot-body h3 { font-size: 17px; font-weight: 700; letter-spacing: -.2px; }
+.spot-city { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+.facts { display: flex; flex-direction: column; gap: 8px; }
+.fact { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--slate); }
+.fact .icon { width: 15px; height: 15px; color: #94a3b8; }
+
+.spot-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 13px 16px; margin-top: 14px; border-top: 1px solid var(--line);
+}
+.rating { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--slate); }
+.rating .icon { width: 15px; height: 15px; color: #eab308; fill: #eab308; stroke: #eab308; }
+.rating .none { color: var(--muted); }
+.btn-outline {
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px;
+    font-size: 13px; font-weight: 600; color: var(--blue); background: #fff;
+    transition: background .15s, border-color .15s;
+}
+.btn-outline:hover { background: #eff6ff; border-color: #bfdbfe; }
+
+/* ---------------- Details panel ---------------- */
+
+.panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); position: sticky; top: 92px; overflow: hidden;
+}
+.panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; border-bottom: 1px solid var(--line);
+}
+.panel-head h2 { font-size: 17px; font-weight: 700; }
+.panel-close { color: var(--muted); padding: 4px; border-radius: 6px; display: flex; }
+.panel-close:hover { background: #f1f5f9; color: var(--ink); }
+.panel-body { padding: 18px; }
+
+.panel .thumb { height: 148px; border-radius: 10px; margin-bottom: 16px; }
+
+.panel-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.panel-title h3 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+.panel-title .badge { position: static; }
+
+.rows { margin-top: 14px; display: flex; flex-direction: column; }
+.row-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 11px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px;
+}
+.row-item:last-child { border-bottom: none; }
+.row-item .icon { color: #94a3b8; margin-top: 2px; }
+.row-item .k { color: var(--ink); font-weight: 600; flex: none; }
+.row-item .v { margin-left: auto; text-align: right; color: var(--slate); }
+.row-item.stacked { flex-wrap: wrap; }
+.row-item.stacked .v { margin-left: 0; width: 100%; text-align: left; color: var(--muted); font-size: 13.5px; padding-left: 28px; margin-top: 4px; }
+
+.panel .btn-primary { width: 100%; margin-top: 18px; padding: 13px; }
+
+.panel-empty { padding: 40px 24px; text-align: center; color: var(--muted); font-size: 14px; }
+.panel-empty .icon { width: 34px; height: 34px; color: #cbd5e1; margin: 0 auto 10px; display: block; }
+
+/* ---------------- Add-spot banner ---------------- */
+
+.cta {
+    display: flex; align-items: center; gap: 22px;
+    background: #eff6ff; border: 1px solid #dbeafe; border-radius: var(--radius);
+    padding: 18px 26px; margin-top: 24px;
+}
+.cta-art { width: 118px; flex: none; }
+.cta h3 { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.cta p { font-size: 14px; color: var(--slate); max-width: 360px; }
+.cta .btn-primary { margin-left: auto; flex: none; }
+
+/* ---------------- States ---------------- */
+
+.empty {
+    grid-column: 1 / -1;
+    background: #fff; border: 1px dashed #cbd5e1; border-radius: var(--radius);
+    padding: 38px 24px; text-align: center; color: var(--muted); font-size: 14.5px;
+}
+.skeleton {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    height: 296px; overflow: hidden; position: relative;
+}
+.skeleton::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(148,163,184,.14), transparent);
+    animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 1140px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .panel { position: static; }
+    .hero-inner { flex-direction: column; }
+    .statcard { width: 100%; max-width: 720px; }
+    .statcard .row { justify-content: flex-start; }
+}
+@media (max-width: 900px) {
+    /* nav becomes a scrollable strip under the brand instead of disappearing */
+    .topbar { position: static; }
+    .topbar-inner { flex-wrap: wrap; height: auto; padding: 12px 0 8px; gap: 12px; }
+    .mainnav {
+        order: 3; width: 100%; margin: 0; gap: 6px;
+        overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+    }
+    .mainnav::-webkit-scrollbar { display: none; }
+    .topbar-actions { margin-left: auto; }
+    .hero h1 { font-size: 40px; }
+}
+@media (max-width: 640px) {
+    .shell { padding: 0 16px; }
+    .hero-inner { padding: 40px 0 36px; }
+    .hero h1 { font-size: 32px; letter-spacing: -.8px; }
+    .hero p.lede { font-size: 15px; }
+    .searchbar { flex-wrap: wrap; padding: 10px; gap: 8px; }
+    .searchbar input { width: 100%; flex-basis: 100%; padding: 6px 4px; }
+    .searchbar .btn-primary { width: 100%; }
+    .hero-chips { gap: 14px 18px; }
+    .cta { flex-wrap: wrap; text-align: left; }
+    .cta-art { width: 74px; }
+    .cta .btn-primary { margin-left: 0; width: 100%; }
+    .spot-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-    <div class="dashboard-wrapper">
-        <header>
-            <h1>StudySpot</h1>
-            <nav id="main-nav">
-                <a href="/studyspot" class="active">Home</a>
-                <a href="/spots">Spots</a>
-                <a href="/add-spot">Add Spot</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-                <a href="/">Logout</a>
-            </nav>
-        </header>
+<!-- Icon sprite (inline so the page needs no icon library) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></symbol>
+    <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></symbol>
+    <symbol id="i-quiet" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m23 9-6 6M17 9l6 6"/></symbol>
+    <symbol id="i-loud" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><path d="M3 11 22 2l-9 19-2-8z"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  </defs>
+</svg>
 
-        <main>
-            <section class="search-section">
-                <h2>Find your perfect study spot.</h2>
-                <p style="color: #64748b; font-size: 14px;">Discover quiet and comfortable places to study in your community.</p>
-             
-                <form action="/spots" method="GET">
-                    <input type="text" name="q" placeholder="Search study spots, libraries, cafes..." required>
-                    <button type="submit" style="border-radius: 8px; background: #2563eb; color: white; border: none; padding: 0 20px; cursor: pointer; font-weight: 600;">Search</button>
-                </form>
-            </section>
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a href="/studyspot" class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M20 3.5c-6.35 0-11.5 5.15-11.5 11.5 0 8.6 11.5 21.5 11.5 21.5S31.5 23.6 31.5 15c0-6.35-5.15-11.5-11.5-11.5z"
+              fill="none" stroke="#2563eb" stroke-width="2.6"/>
+        <path d="M13.8 11.4h4.3c1 0 1.9.8 1.9 1.9v7.4c0-1-.9-1.9-1.9-1.9h-4.3z" fill="#2563eb"/>
+        <path d="M26.2 11.4h-4.3c-1 0-1.9.8-1.9 1.9v7.4c0-1 .9-1.9 1.9-1.9h4.3z" fill="#2563eb" opacity=".72"/>
+      </svg>
+      <div>
+        <div class="brand-name">Study<span>Spot</span></div>
+        <div class="brand-tag">Find. Study. Succeed.</div>
+      </div>
+    </a>
 
-            <section>
-                <h2 style="margin-bottom: 15px; color: #ffffff;">Popular Study Spots</h2>
-                <div id="spots-container"></div>
-            </section>
-        </main>
+    <nav class="mainnav" id="mainnav"><!-- built by JS (role-aware) --></nav>
+
+    <div class="topbar-actions" id="topbarActions"><!-- built by JS --></div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-shelves"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-scrim"></div>
+  </div>
+
+  <div class="shell hero-inner">
+    <div class="hero-copy">
+      <h1>Find your perfect <em>study spot.</em></h1>
+      <p class="lede">Discover quiet and comfortable places to study in your community.</p>
+
+      <form class="searchbar" id="searchForm" role="search">
+        <svg class="icon"><use href="#i-search"/></svg>
+        <input type="text" id="searchInput" name="q" placeholder="Search study spots, libraries, cafes..." autocomplete="off">
+        <button type="submit" class="btn-primary">Search</button>
+      </form>
+
+      <div class="hero-chips">
+        <span class="chip"><svg class="icon icon-sm"><use href="#i-wifi"/></svg>Free Wi-Fi</span>
+        <span class="chip"><svg class="icon icon-sm"><use href="#i-quiet"/></svg>Quiet Spaces</span>
+        <span class="chip"><svg class="icon icon-sm"><use href="#i-users"/></svg>Many Seats</span>
+        <span class="chip"><svg class="icon icon-sm"><use href="#i-clock"/></svg>Open Now</span>
+      </div>
     </div>
 
-    <script>
-        fetch('/api/current-user')
-            .then(res => res.json())
-            .then(user => {
-                const nav = document.getElementById('main-nav');
-                if (nav) {
-                    let navContent = `
-                        <a href="/studyspot" class="active">Home</a> 
-                        <a href="/spots">Spots</a> 
-                        <a href="/add-spot">${user && user.role === 'admin' ? 'Add Spot' : 'Request Spot'}</a>
-                    `;
+    <div class="statcard">
+      <div class="row">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <span class="num" id="spotCount">—</span>
+      </div>
+      <div class="lbl">Study Spots</div>
+      <div class="sub">in your area</div>
+    </div>
+  </div>
+</section>
 
-                    if (user && user.role === 'admin') {
-                        navContent += ` <a href="/admin/pending">Review Requests</a>`;
-                    }
+<!-- ============ MAIN ============ -->
+<main class="main">
+  <div class="shell layout">
 
-                    navContent += ` <a href="/about">About</a> <a href="/contact">Contact</a>`;
+    <!-- Left: spot list -->
+    <section>
+      <div class="section-head">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <h2 id="listTitle">Popular Study Spots</h2>
+        <a class="viewall" href="/spots" id="viewAll">View all <svg class="icon icon-sm"><use href="#i-chev"/></svg></a>
+      </div>
 
-                    if (user) {
-                        navContent += ` <a href="/profile">Profile</a>`;
-                    }
-                    navContent += ` <a href="/">Logout</a>`;
+      <div class="spot-grid" id="spotGrid">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      </div>
 
-                    nav.innerHTML = navContent;
-                }
-            });
+      <!-- Add a spot banner -->
+      <div class="cta">
+        <svg class="cta-art" viewBox="0 0 160 110" aria-hidden="true">
+          <ellipse cx="80" cy="99" rx="58" ry="6" fill="#bfdbfe" opacity=".55"/>
+          <rect x="30" y="86" width="100" height="6" rx="3" fill="#93c5fd"/>
+          <rect x="58" y="60" width="52" height="28" rx="4" fill="#2563eb"/>
+          <rect x="63" y="65" width="42" height="18" rx="2" fill="#dbeafe"/>
+          <circle cx="52" cy="38" r="12" fill="#1e3a8a"/>
+          <path d="M40 86c0-12 5.4-22 12-22s12 10 12 22z" fill="#3b82f6"/>
+          <path d="M52 50c-4 0-7 2-8 6l6 3 6-3c-1-4-4-6-4-6z" fill="#60a5fa"/>
+          <path d="M118 88c-6-4-9-11-9-19 0-3 4-5 6-3 4 4 6 12 5 22z" fill="#34d399"/>
+          <path d="M126 88c4-4 6-10 6-16 0-3-4-4-6-2-3 4-4 11-3 18z" fill="#6ee7b7"/>
+          <rect x="112" y="86" width="22" height="6" rx="2" fill="#0f766e" opacity=".35"/>
+          <circle cx="30" cy="26" r="4" fill="#93c5fd"/>
+          <circle cx="136" cy="34" r="3" fill="#93c5fd"/>
+        </svg>
+        <div>
+          <h3>Add a new study spot!</h3>
+          <p>Help other students by sharing study places in your community.</p>
+        </div>
+        <a class="btn-primary" id="ctaAdd" href="/add-spot">
+          <svg class="icon icon-sm"><use href="#i-plus"/></svg> Add Spot
+        </a>
+      </div>
+    </section>
 
-        fetch('/api/spots')
-            .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('spots-container');
-                if (!container) return;
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="spot-card"><p>No study spots available yet.</p></div>';
-                    return;
-                }
-                container.innerHTML = '';
-                
-                data.slice(0, 3).forEach(spot => {
-                    container.innerHTML += `
-                        <div class="spot-card">
-                            <h3 style="color: #1e293b; margin-bottom: 5px;">${spot.name}</h3>
-                            <p style="color: #64748b; margin-bottom: 8px; font-size: 14px;">${spot.city}</p>
-                            <p style="color: #334155; font-size: 13px;">${spot.seats} seats | ${spot.wifi} | ${spot.noise}</p>
-                        </div>
-                    `;
-                });
-            });
-    </script>
+    <!-- Right: details panel -->
+    <aside class="panel">
+      <div class="panel-head">
+        <h2>Spot Details</h2>
+        <button class="panel-close" id="panelClose" aria-label="Close details">
+          <svg class="icon"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div id="panelBody">
+        <div class="panel-empty">
+          <svg class="icon"><use href="#i-pin"/></svg>
+          Select a study spot to see its details.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<script>
+/* =========================================================
+   Data plumbing — all of it talks to the existing API:
+     GET /api/current-user
+     GET /api/spots
+     GET /api/search?q=
+     GET /api/spots/:id/reviews
+   ========================================================= */
+
+const PREVIEW_COUNT = 3;          // cards shown before searching
+let allSpots   = [];
+let shownSpots = [];
+let selectedId = null;
+let currentUser = null;
+
+const $ = (id) => document.getElementById(id);
+
+/* Escape anything that came from a user submission before it hits innerHTML. */
+function esc(v) {
+    return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* Availability is derived from the seat count (the data has no status field). */
+function availability(seats) {
+    const n = Number(seats) || 0;
+    if (n <= 0)  return { cls: 'full', label: 'Full' };
+    if (n < 10)  return { cls: 'warn', label: 'Almost Full' };
+    return { cls: 'ok', label: 'Available' };
+}
+const hasWifi  = (s) => String(s || '').toLowerCase().includes('available');
+const isQuiet  = (s) => String(s || '').toLowerCase().includes('quiet');
+
+/* ---------------- Navigation (role-aware) ---------------- */
+
+function buildNav(user) {
+    const isAdmin = !!(user && user.role === 'admin');
+    const links = [
+        { href: '/studyspot', label: 'Home',  icon: 'i-home', active: true },
+        { href: '/spots',     label: 'Spots', icon: 'i-pin' },
+        { href: '/add-spot',  label: isAdmin ? 'Add Spot' : 'Request Spot', icon: 'i-plus' }
+    ];
+    if (isAdmin) links.push({ href: '/admin/pending', label: 'Review Requests', icon: 'i-doc' });
+    links.push({ href: '/about',   label: 'About',   icon: 'i-info' });
+    links.push({ href: '/contact', label: 'Contact', icon: 'i-mail' });
+
+    $('mainnav').innerHTML = links.map(l =>
+        `<a class="navlink${l.active ? ' active' : ''}" href="${l.href}">
+            <svg class="icon icon-sm"><use href="#${l.icon}"/></svg>${esc(l.label)}
+         </a>`).join('');
+
+    $('topbarActions').innerHTML = user
+        ? `<a class="btn-ghost" href="/profile">
+               <svg class="icon icon-sm"><use href="#i-user"/></svg>${esc(user.username || 'Profile')}
+           </a>
+           <a class="btn-ghost btn-icon" href="/" title="Log out" aria-label="Log out">
+               <svg class="icon icon-sm"><use href="#i-logout"/></svg>
+           </a>`
+        : `<a class="btn-ghost" href="/">
+               <svg class="icon icon-sm"><use href="#i-user"/></svg>Login
+           </a>`;
+
+    if (!isAdmin) $('ctaAdd').innerHTML =
+        '<svg class="icon icon-sm"><use href="#i-plus"/></svg> Request Spot';
+}
+
+/* ---------------- Cards ---------------- */
+
+function thumbMarkup(spot, index, tall) {
+    const av = availability(spot.seats);
+    const style = spot.image ? ` style="background-image:url('${esc(spot.image)}')"` : '';
+    return `<div class="thumb v${(index % 3) + 1}"${style}>
+                <span class="badge ${av.cls}">${av.label}</span>
+                <svg class="icon"><use href="#i-book"/></svg>
+            </div>`;
+}
+
+function cardMarkup(spot, index) {
+    const wifi  = hasWifi(spot.wifi);
+    const quiet = isQuiet(spot.noise);
+    const hours = spot.hours ? `<div class="fact">
+            <svg class="icon"><use href="#i-clock"/></svg>${esc(spot.hours)}</div>` : '';
+
+    return `<article class="spot-card${spot.id == selectedId ? ' selected' : ''}" data-id="${esc(spot.id)}">
+        ${thumbMarkup(spot, index)}
+        <div class="spot-body">
+            <h3>${esc(spot.name)}</h3>
+            <div class="spot-city">${esc(spot.city)}</div>
+            <div class="facts">
+                <div class="fact"><svg class="icon"><use href="#i-users"/></svg>${esc(spot.seats)} seats available</div>
+                <div class="fact"><svg class="icon"><use href="#${wifi ? 'i-wifi' : 'i-wifi-off'}"/></svg>${wifi ? 'Wi-Fi Available' : 'No Wi-Fi'}</div>
+                <div class="fact"><svg class="icon"><use href="#${quiet ? 'i-quiet' : 'i-loud'}"/></svg>Noise Level: ${esc(spot.noise)}</div>
+                ${hours}
+            </div>
+        </div>
+        <div class="spot-foot">
+            <span class="rating" data-rating-for="${esc(spot.id)}"><span class="none">Loading…</span></span>
+            <button class="btn-outline" data-details="${esc(spot.id)}">View Details</button>
+        </div>
+    </article>`;
+}
+
+function renderGrid(spots, { searching = false, query = '' } = {}) {
+    shownSpots = spots;
+    const grid = $('spotGrid');
+
+    if (!spots.length) {
+        grid.innerHTML = `<div class="empty">${searching
+            ? `No study spots match “${esc(query)}”.`
+            : 'No study spots have been added yet.'}</div>`;
+        return;
+    }
+
+    grid.innerHTML = spots.map(cardMarkup).join('');
+    spots.forEach(loadRating);
+}
+
+/* Ratings come from the real review API — nothing is invented. */
+function loadRating(spot) {
+    fetch(`/api/spots/${encodeURIComponent(spot.id)}/reviews`)
+        .then(r => r.json())
+        .then(reviews => {
+            const slot = document.querySelector(`[data-rating-for="${CSS.escape(String(spot.id))}"]`);
+            if (!slot) return;
+            if (Array.isArray(reviews) && reviews.length) {
+                const avg = reviews.reduce((t, r) => t + (Number(r.rating) || 0), 0) / reviews.length;
+                slot.innerHTML = `<svg class="icon"><use href="#i-star"/></svg>
+                    <strong>${avg.toFixed(1)}</strong> (${reviews.length} review${reviews.length > 1 ? 's' : ''})`;
+            } else {
+                slot.innerHTML = '<span class="none">No reviews yet</span>';
+            }
+        })
+        .catch(() => {});
+}
+
+/* ---------------- Details panel ---------------- */
+
+function row(icon, key, value) {
+    return `<div class="row-item">
+        <svg class="icon icon-sm"><use href="#${icon}"/></svg>
+        <span class="k">${key}</span><span class="v">${value}</span>
+    </div>`;
+}
+
+function showDetails(id) {
+    const i = shownSpots.findIndex(s => String(s.id) === String(id));
+    const spot = shownSpots[i];
+    if (!spot) return;
+
+    selectedId = spot.id;
+    document.querySelectorAll('.spot-card').forEach(c =>
+        c.classList.toggle('selected', c.dataset.id === String(id)));
+
+    const av    = availability(spot.seats);
+    const wifi  = hasWifi(spot.wifi);
+    const quiet = isQuiet(spot.noise);
+    const maps  = 'https://www.google.com/maps/search/?api=1&query=' +
+                  encodeURIComponent(`${spot.name} ${spot.city}`);
+
+    $('panelBody').innerHTML = `
+      <div class="panel-body">
+        ${thumbMarkup(spot, i)}
+        <div class="panel-title">
+            <h3>${esc(spot.name)}</h3>
+            <span class="badge ${av.cls}">${av.label}</span>
+        </div>
+        <div class="rows">
+            ${row('i-pin', 'Location', esc(spot.city))}
+            ${row('i-users', 'Available Seats', esc(spot.seats))}
+            ${row(wifi ? 'i-wifi' : 'i-wifi-off', 'Wi-Fi', wifi ? 'Available' : 'No Wi-Fi')}
+            ${row(quiet ? 'i-quiet' : 'i-loud', 'Noise Level', esc(spot.noise))}
+            ${spot.hours ? row('i-clock', 'Opening Hours', esc(spot.hours)) : ''}
+            <div class="row-item" data-rating-for="panel">
+                <svg class="icon icon-sm"><use href="#i-star"/></svg>
+                <span class="k">Rating</span><span class="v">…</span>
+            </div>
+            ${spot.description ? `<div class="row-item stacked">
+                <svg class="icon icon-sm"><use href="#i-doc"/></svg>
+                <span class="k">Description</span>
+                <span class="v">${esc(spot.description)}</span></div>` : ''}
+        </div>
+        <a class="btn-primary" href="${maps}" target="_blank" rel="noopener">
+            <svg class="icon icon-sm"><use href="#i-nav"/></svg> Get Directions
+        </a>
+      </div>`;
+
+    fetch(`/api/spots/${encodeURIComponent(spot.id)}/reviews`)
+        .then(r => r.json())
+        .then(reviews => {
+            const slot = document.querySelector('[data-rating-for="panel"] .v');
+            if (!slot) return;
+            if (Array.isArray(reviews) && reviews.length) {
+                const avg = reviews.reduce((t, r) => t + (Number(r.rating) || 0), 0) / reviews.length;
+                slot.textContent = `${avg.toFixed(1)} / 5 (${reviews.length})`;
+            } else {
+                slot.textContent = 'No reviews yet';
+            }
+        })
+        .catch(() => {});
+
+    if (window.innerWidth <= 1140) {
+        document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function clearDetails() {
+    selectedId = null;
+    document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('selected'));
+    $('panelBody').innerHTML = `<div class="panel-empty">
+        <svg class="icon"><use href="#i-pin"/></svg>
+        Select a study spot to see its details.</div>`;
+}
+
+/* ---------------- Search ---------------- */
+
+let searchTimer;
+function runSearch(query) {
+    const q = query.trim();
+    $('viewAll').href = q ? `/spots?q=${encodeURIComponent(q)}` : '/spots';
+
+    if (!q) {
+        $('listTitle').textContent = 'Popular Study Spots';
+        renderGrid(allSpots.slice(0, PREVIEW_COUNT));
+        if (allSpots.length) showDetails(allSpots[0].id);
+        return;
+    }
+
+    fetch(`/api/search?q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(results => {
+            $('listTitle').textContent = `Results for “${q}”`;
+            renderGrid(results || [], { searching: true, query: q });
+            if (results && results.length) showDetails(results[0].id); else clearDetails();
+        })
+        .catch(() => {});
+}
+
+/* ---------------- Events ---------------- */
+
+$('searchForm').addEventListener('submit', (e) => { e.preventDefault(); runSearch($('searchInput').value); });
+$('searchInput').addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    const v = e.target.value;
+    searchTimer = setTimeout(() => runSearch(v), 260);
+});
+
+$('spotGrid').addEventListener('click', (e) => {
+    const card = e.target.closest('[data-details]') || e.target.closest('.spot-card');
+    if (!card) return;
+    showDetails(card.dataset.details || card.dataset.id);
+});
+
+$('panelClose').addEventListener('click', clearDetails);
+
+/* ---------------- Boot ---------------- */
+
+fetch('/api/current-user')
+    .then(r => r.json())
+    .then(user => { currentUser = user; buildNav(user); })
+    .catch(() => buildNav(null));
+
+fetch('/api/spots')
+    .then(r => r.json())
+    .then(spots => {
+        allSpots = Array.isArray(spots) ? spots : [];
+        $('spotCount').textContent = allSpots.length;
+        renderGrid(allSpots.slice(0, PREVIEW_COUNT));
+        if (allSpots.length) showDetails(allSpots[0].id);
+    })
+    .catch(() => {
+        $('spotCount').textContent = '0';
+        $('spotGrid').innerHTML = '<div class="empty">Could not load study spots.</div>';
+    });
+</script>
 </body>
 </html>

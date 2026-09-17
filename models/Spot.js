@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const SPOTS_FILE = path.join(__dirname, '../spots.json');
+const SPOTS_FILE = path.join(__dirname, '../data/spots.json');
 
 const Spot = {
     getAll: function() {
@@ -48,7 +48,7 @@ const Spot = {
 
     create: function(spotData) {
         const spots = this.getAll();
-        
+
         let wifiChoice = 'No Wi-Fi';
         if (spotData.wifi && spotData.wifi.toLowerCase() === 'available') {
             wifiChoice = 'Available';
@@ -74,7 +74,7 @@ const Spot = {
             wifi: wifiChoice,
             noise: noiseChoice
         };
-        
+
         spots.push(newSpot);
         this.saveAll(spots);
         return newSpot;

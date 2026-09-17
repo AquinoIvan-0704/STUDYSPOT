@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const PENDING_FILE = path.join(__dirname, '../pending_spots.json');
+const PENDING_FILE = path.join(__dirname, '../data/pending_spots.json');
 
 const PendingSpot = {
     getAll: function() {

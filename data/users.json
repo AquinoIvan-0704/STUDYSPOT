@@ -1,0 +1,12 @@
+[
+  {
+    "username": "ivan",
+    "password": "$2b$10$XS5HYqdY8F21pXGoltXgHOa0.Tyfgrq3TRfPU0uue0RSlAlH8DXDC",
+    "role": "user"
+  },
+  {
+    "username": "Rene Baterbonia",
+    "password": "$2b$10$lyX.qWRDNeVL0Vc3SRVkS.UCe6m0tbSlMTRt380f0tkbI0PylSmcK",
+    "role": "admin"
+  }
+]

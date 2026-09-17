@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const USERS_FILE = path.join(__dirname, '../users.json');
+const USERS_FILE = path.join(__dirname, '../data/users.json');
 
 const User = {
     getAll: function() {

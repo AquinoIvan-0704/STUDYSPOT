@@ -1,4 +1,11 @@
 {
+  "name": "studyspot",
+  "version": "1.0.0",
+  "description": "StudySpot - find and share study spaces",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "express": "^5.2.1",
