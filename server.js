@@ -14,6 +14,10 @@ const User        = require('./models/User');
 const PendingSpot = require('./models/PendingSpot');
 const Review      = require('./models/Review');
 const Message     = require('./models/Message');
+const { ensureData } = require('./models/bootstrap');
+
+// make sure /data exists (and migrate older copies) before anything reads it
+ensureData();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
