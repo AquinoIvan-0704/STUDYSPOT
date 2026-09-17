@@ -168,13 +168,13 @@
 
 .empty {
     grid-column: 1 / -1;
-    background: #fff; border: 1px dashed #cbd5e1; border-radius: var(--radius);
+    background: var(--card); border: 1px dashed #cbd5e1; border-radius: var(--radius);
     padding: 38px 24px; text-align: center; color: var(--muted); font-size: 14.5px;
 }
 .empty .icon { width: 30px; height: 30px; color: #cbd5e1; display: block; margin: 0 auto 10px; }
 
 .skeleton {
-    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     height: 296px; overflow: hidden; position: relative;
 }
 .skeleton::after {
@@ -187,7 +187,7 @@
 /* toast (used for save confirmations) */
 .toast {
     position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(10px);
-    background: var(--ink); color: #fff; font-size: 14px; font-weight: 500;
+    background: var(--toast-bg); color: var(--toast-ink); font-size: 14px; font-weight: 500;
     padding: 12px 20px; border-radius: var(--radius-pill); box-shadow: var(--shadow-lg);
     opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 200;
     display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);

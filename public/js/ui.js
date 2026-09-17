@@ -42,6 +42,8 @@ const SS = (function () {
 <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
 <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
 <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
 </defs></svg>`;
 
     const BRAND = `
@@ -95,6 +97,49 @@ const SS = (function () {
         if (mins < 1440) return Math.floor(mins / 60) + 'h ago';
         if (mins < 10080) return Math.floor(mins / 1440) + 'd ago';
         return d.toLocaleDateString();
+    }
+
+    /* ---------- theme (light / dark) ---------- */
+
+    const THEME_KEY = 'studyspot-theme';
+
+    /** What the user picked: 'light', 'dark', or null meaning "follow the OS". */
+    function storedTheme() {
+        try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+    }
+
+    /** What is actually on screen right now. */
+    function activeTheme() {
+        const chosen = document.documentElement.getAttribute('data-theme');
+        if (chosen) return chosen;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* private mode */ }
+    }
+
+    function toggleTheme() {
+        const next = activeTheme() === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        return next;
+    }
+
+    const themeButtonMarkup = (extra) =>
+        `<button type="button" class="btn btn-ghost btn-icon theme-toggle ${extra || ''}"
+                 data-theme-toggle aria-label="Switch between light and dark mode"
+                 title="Light / dark mode">
+            ${icon('i-moon', 'icon-sm i-light')}${icon('i-sun', 'icon-sm i-dark')}
+         </button>`;
+
+    function wireThemeToggles() {
+        document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
+            if (btn._wired) return;
+            btn._wired = true;
+            btn.addEventListener('click', toggleTheme);
+        });
     }
 
     /* ---------- current user (fetched once, shared by every script) ---------- */
@@ -169,7 +214,7 @@ const SS = (function () {
         host.innerHTML = `<div class="shell topbar-inner">
             ${BRAND}
             <nav class="mainnav">${nav}</nav>
-            <div class="topbar-actions">${actions}</div>
+            <div class="topbar-actions">${themeButtonMarkup()}${actions}</div>
         </div>`;
     }
 
@@ -202,11 +247,16 @@ const SS = (function () {
 
         user().then(u => {
             buildTopbar(u);
+            if (!document.querySelector('[data-topbar]')) {
+                document.body.insertAdjacentHTML('beforeend', themeButtonMarkup('floating'));
+            }
+            wireThemeToggles();
             readyQueue.forEach(fn => {
                 try { fn(u); } catch (e) { console.error('[StudySpot]', e); }
             });
         });
     });
 
-    return { esc, icon, availability, hasWifi, isQuiet, stars, when, user, toast, ready };
+    return { esc, icon, availability, hasWifi, isQuiet, stars, when, user, toast, ready,
+             theme: { active: activeTheme, apply: applyTheme, toggle: toggleTheme } };
 })();

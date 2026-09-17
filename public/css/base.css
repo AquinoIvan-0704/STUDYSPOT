@@ -19,6 +19,7 @@
     --line-soft:   #f1f5f9;
     --page:        #f1f5f9;
     --card:        #ffffff;
+    --surface:     #ffffff;
 
     /* status */
     --green:       #22c55e;
@@ -40,6 +41,9 @@
     --shadow-sm:   0 1px 2px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .05);
     --shadow-md:   0 4px 6px rgba(15, 23, 42, .05), 0 10px 20px rgba(15, 23, 42, .08);
     --shadow-lg:   0 10px 15px rgba(15, 23, 42, .08), 0 24px 48px rgba(15, 23, 42, .12);
+
+    --toast-bg:    #0f172a;
+    --toast-ink:   #ffffff;
 
     --font:        system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -99,13 +103,13 @@ button, .btn { font: inherit; cursor: pointer; border: none; background: none; }
 .btn-primary { background: var(--blue); color: #fff; }
 .btn-primary:hover { background: var(--blue-dark); color: #fff; }
 
-.btn-outline { background: #fff; color: var(--blue); border: 1px solid var(--line); }
+.btn-outline { background: var(--card); color: var(--blue); border: 1px solid var(--line); }
 .btn-outline:hover { background: var(--blue-50); border-color: var(--blue-100); }
 
-.btn-ghost { background: #fff; color: var(--slate); border: 1px solid var(--line); }
-.btn-ghost:hover { background: #f8fafc; border-color: #cbd5e1; color: var(--ink); }
+.btn-ghost { background: var(--card); color: var(--slate); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--line-soft); border-color: #cbd5e1; color: var(--ink); }
 
-.btn-danger { background: #fff; color: var(--red-ink); border: 1px solid var(--red-soft); }
+.btn-danger { background: var(--card); color: var(--red-ink); border: 1px solid var(--red-soft); }
 .btn-danger:hover { background: var(--red-soft); }
 
 .btn-sm { padding: 7px 14px; font-size: 13px; }
@@ -125,7 +129,7 @@ input[type="text"], input[type="email"], input[type="password"],
 input[type="number"], input[type="search"], select, textarea {
     width: 100%;
     font: inherit; font-size: 14.5px; color: var(--ink);
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     padding: 11px 13px;

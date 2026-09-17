@@ -46,7 +46,7 @@
 
 .searchbar {
     display: flex; align-items: center; gap: 10px;
-    background: #fff; border-radius: 12px; padding: 7px 7px 7px 16px;
+    background: var(--card); border-radius: 12px; padding: 7px 7px 7px 16px;
     box-shadow: var(--shadow-lg); max-width: 720px;
 }
 .searchbar > .icon { color: var(--muted); }
@@ -63,7 +63,7 @@
 
 .statcard {
     flex: none; width: 212px; margin: 6px 0 0 auto;
-    background: #fff; border-radius: var(--radius);
+    background: var(--card); border-radius: var(--radius);
     padding: 20px 22px; box-shadow: var(--shadow-lg);
 }
 .statcard .top { display: flex; align-items: center; gap: 12px; }
