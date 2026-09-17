@@ -204,6 +204,10 @@ app.get('/request-sent',  requireLogin, (req, res) => res.sendFile(page('request
    API — spots
    ========================================================================== */
 
+/** What the running process is — the front-end compares this to its own
+ *  constant so a stale server (edited files, never restarted) is obvious. */
+app.get('/api/version', (req, res) => res.json({ version: require('./package.json').version }));
+
 app.get('/api/current-user', (req, res) => res.json(req.user || null));
 
 /** Every spot, each with its review summary attached. */
@@ -432,5 +436,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`StudySpot v${require('./package.json').version} running at http://localhost:${PORT}`);
 });

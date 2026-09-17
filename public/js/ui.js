@@ -269,6 +269,31 @@ const SS = (function () {
         </div>`;
     }
 
+    /* ---------- stale-server check ---------- */
+
+    // Bumped whenever the server gains new routes. Node loads server.js once at
+    // startup, so editing it changes nothing until the process restarts — this
+    // catches that instead of leaving you with mysterious 404s.
+    const APP_VERSION = '2.1.0';
+
+    function checkServerVersion() {
+        fetch('/api/version')
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(data => {
+                if (data.version !== APP_VERSION) throw new Error(data.version);
+            })
+            .catch((err) => {
+                const running = (err && err.message && err.message !== 'Failed to fetch')
+                    ? err.message : 'an older build';
+                const bar = document.createElement('div');
+                bar.className = 'stale-banner';
+                bar.innerHTML = `${icon('i-alert', 'icon-sm')}
+                    <span><strong>The server is running ${esc(running)} — these pages are v${APP_VERSION}.</strong>
+                    Stop it and run <code>npm run dev</code> again, or links to new pages will 404.</span>`;
+                document.body.insertAdjacentElement('afterbegin', bar);
+            });
+    }
+
     /* ---------- boot ---------- */
 
     const readyQueue = [];
@@ -280,6 +305,7 @@ const SS = (function () {
         document.body.classList.add('has-footer');
         buildFooter();
         readFlash();
+        checkServerVersion();
 
         user().then(u => {
             buildTopbar(u);

@@ -221,3 +221,14 @@
 .spot-card h3 a, .spot-row-head h3 a { color: inherit; }
 .spot-card h3 a:hover, .spot-row-head h3 a:hover { color: var(--blue); }
 a.thumb { display: flex; }
+
+/* shown when the browser's files are newer than the running server process */
+.stale-banner {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: #7f1d1d; color: #fee2e2;
+    padding: 11px 18px; font-size: 13.5px; line-height: 1.45;
+}
+.stale-banner code {
+    background: rgba(0,0,0,.35); padding: 1px 6px; border-radius: 4px;
+    font-family: ui-monospace, Consolas, monospace;
+}
