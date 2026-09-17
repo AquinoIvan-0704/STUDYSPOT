@@ -1,7 +1,3 @@
-/* ==========================================================================
-   StudySpot — Express server
-   Data lives in JSON files under /data (see the models folder).
-   ========================================================================== */
 
 const express = require('express');
 const path = require('path');
@@ -16,13 +12,13 @@ const Review      = require('./models/Review');
 const Message     = require('./models/Message');
 const { ensureData } = require('./models/bootstrap');
 
-// make sure /data exists (and migrate older copies) before anything reads it
+
 ensureData();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-/* ---------- middleware ---------- */
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -96,10 +92,6 @@ function requireAdmin(req, res, next) {
 }
 
 const isAdmin = (req) => !!(req.user && req.user.role === 'admin');
-
-/* ==========================================================================
-   Auth
-   ========================================================================== */
 
 app.get('/', (req, res) => {
     if (req.user) return res.redirect('/studyspot');
@@ -180,9 +172,6 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-/* ==========================================================================
-   Pages
-   ========================================================================== */
 
 app.get('/studyspot', (req, res) => res.sendFile(page('studyspot.html')));
 app.get('/spots',     (req, res) => res.sendFile(page('spots.html')));
@@ -199,10 +188,6 @@ app.get('/admin/pending', requireAdmin, (req, res) => res.sendFile(page('admin-p
 app.get('/admin/users',   requireAdmin, (req, res) => res.sendFile(page('admin-users.html')));
 app.get('/profile',       requireLogin, (req, res) => res.sendFile(page('profile.html')));
 app.get('/request-sent',  requireLogin, (req, res) => res.sendFile(page('request-sent.html')));
-
-/* ==========================================================================
-   API — spots
-   ========================================================================== */
 
 /** What the running process is — the front-end compares this to its own
  *  constant so a stale server (edited files, never restarted) is obvious. */
@@ -227,9 +212,6 @@ app.get('/api/spot/:id', (req, res) => {
     res.json({ ...spot, reviews: Review.summaryFor(spot.id) });
 });
 
-/**
- * Admins create a spot outright; everyone else files a request for approval.
- */
 app.post('/api/spots', requireLogin, (req, res) => {
     const { name, city, seats } = req.body;
     if (!name || !city || seats === undefined || seats === '') {
@@ -257,9 +239,6 @@ app.post('/api/delete-spot/:id', requireAdmin, (req, res) => {
     flash(res, '/spots', removed ? 'Spot deleted.' : null, removed ? null : 'That spot no longer exists.');
 });
 
-/* ==========================================================================
-   API — pending requests
-   ========================================================================== */
 
 app.get('/api/pending-spots', requireAdmin, (req, res) => res.json(PendingSpot.getAll()));
 
@@ -279,10 +258,6 @@ app.post('/api/decline-spot/:id', requireAdmin, (req, res) => {
     PendingSpot.remove(req.params.id);
     flash(res, '/admin/pending', `Declined “${pending.name}”.`);
 });
-
-/* ==========================================================================
-   API — reviews
-   ========================================================================== */
 
 app.get('/api/spots/:id/reviews', (req, res) => {
     const mine = req.user ? Review.findByUserAndSpot(req.user.username, req.params.id) : null;
@@ -321,9 +296,6 @@ app.post('/api/reviews/:id/delete', requireLogin, (req, res) => {
     flash(res, backTo(req, '/spots'), 'Review deleted.');
 });
 
-/* ==========================================================================
-   API — profile & contact
-   ========================================================================== */
 
 app.get('/api/user-profile', requireLogin, (req, res) => res.json(req.user));
 
@@ -405,7 +377,7 @@ app.post('/api/users/:username/delete', requireAdmin, (req, res) => {
     }
 
     User.remove(target.username);
-    Review.removeByUser(target.username);        // their reviews go with them
+    Review.removeByUser(target.username);       
     flash(res, '/admin/users', `Deleted ${target.username}.`);
 });
 
@@ -416,9 +388,6 @@ app.post('/api/messages/:id/delete', requireAdmin, (req, res) => {
     flash(res, '/admin/pending', 'Message removed.');
 });
 
-/* ==========================================================================
-   Fallbacks
-   ========================================================================== */
 
 app.use((req, res) => {
     if (wantsJson(req) || req.path.startsWith('/api/')) {

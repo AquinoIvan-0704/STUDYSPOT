@@ -8,5 +8,12 @@
     "username": "Rene Baterbonia",
     "password": "$2b$10$lyX.qWRDNeVL0Vc3SRVkS.UCe6m0tbSlMTRt380f0tkbI0PylSmcK",
     "role": "admin"
+  },
+  {
+    "username": "Pheona",
+    "email": "",
+    "password": "$2b$10$z1Myb6JaDLIvDHThD9wqAO4TvwhUv4Q/E59D9eC6iK1UsSDE/NmIq",
+    "role": "admin",
+    "createdAt": "2026-09-17T02:40:34.494Z"
   }
 ]
