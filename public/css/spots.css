@@ -60,3 +60,36 @@
     .spot-row-head .admin-actions { margin-left: 0; width: 100%; }
     .spot-row-foot .btn { margin-left: 0; width: 100%; }
 }
+
+/* ---------- sort control, filter chips, pagination ---------- */
+
+.sort-select { width: auto; min-width: 170px; }
+
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+
+.filter-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: var(--radius-pill);
+    border: 1px solid var(--line); background: var(--card);
+    font-size: 13.5px; font-weight: 500; color: var(--slate);
+    transition: background .15s, border-color .15s, color .15s;
+}
+.filter-chip:hover { border-color: #cbd5e1; color: var(--ink); }
+.filter-chip .icon { color: #94a3b8; }
+.filter-chip.active {
+    background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600;
+}
+.filter-chip.active .icon { color: #fff; }
+
+.more-wrap { display: flex; justify-content: center; margin-top: 24px; }
+.more-wrap .btn { min-width: 220px; }
+
+.review.is-mine { border-left: 3px solid var(--blue); }
+
+@media (max-width: 640px) {
+    .list-toolbar { flex-direction: column; align-items: stretch; }
+    .list-toolbar .input-group { max-width: none; }
+    .sort-select { width: 100%; }
+    .filter-bar { gap: 6px; }
+    .filter-chip { flex: 1 1 calc(50% - 6px); justify-content: center; }
+}

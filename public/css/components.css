@@ -208,3 +208,11 @@
     .list-item .actions .btn { flex: 1; }
     .card-pad { padding: 18px; }
 }
+
+/* small round initial used in the admin user list */
+.user-badge {
+    width: 44px; height: 44px; flex: none; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #38bdf8);
+    color: #fff; font-weight: 700; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+}

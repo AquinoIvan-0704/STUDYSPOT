@@ -33,6 +33,7 @@ const PendingSpot = {
             noise: spotData.noise || 'Moderate',
             hours: spotData.hours ? String(spotData.hours).trim() : '',
             description: spotData.description ? String(spotData.description).trim() : '',
+            image: String(spotData.image || '').trim().slice(0, 500),
             submittedBy: spotData.submittedBy || '',      // kept so the admin sees who asked
             requestedAt: new Date().toISOString()
         };

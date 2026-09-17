@@ -28,6 +28,7 @@
                 $('noise').value = ['Quiet', 'Moderate', 'Loud'].includes(spot.noise) ? spot.noise : 'Moderate';
                 $('hours').value = spot.hours || '';
                 $('description').value = spot.description || '';
+                if ($('image')) $('image').value = spot.image || '';
             })
             .catch(notFound);
 

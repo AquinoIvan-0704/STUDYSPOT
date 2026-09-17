@@ -18,7 +18,7 @@
         const style = spot.image ? ` style="background-image:url('${SS.esc(spot.image)}')"` : '';
         return `<div class="thumb v${(index % 3) + 1}"${style}>
                     <span class="badge ${av.cls}">${av.label}</span>
-                    ${SS.icon('i-book')}
+                    ${spot.image ? '' : SS.icon('i-book')}
                 </div>`;
     }
 

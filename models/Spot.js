@@ -8,6 +8,13 @@ function normaliseWifi(value) {
     return String(value || '').toLowerCase().includes('available') ? 'Available' : 'No Wi-Fi';
 }
 
+/** Only allow an http(s) link or a site-relative path as an image. */
+function safeImage(value) {
+    const v = String(value || '').trim();
+    if (!v) return '';
+    return /^(https?:\/\/|\/)/i.test(v) ? v.slice(0, 500) : '';
+}
+
 function normaliseNoise(value) {
     const v = String(value || '').toLowerCase();
     if (v.includes('quiet')) return 'Quiet';
@@ -49,6 +56,7 @@ const Spot = {
             noise: normaliseNoise(spotData.noise),
             hours: spotData.hours ? String(spotData.hours).trim() : '',
             description: spotData.description ? String(spotData.description).trim() : '',
+            image: safeImage(spotData.image),
             addedBy: spotData.addedBy || spotData.submittedBy || '',
             createdAt: new Date().toISOString()
         };
@@ -74,6 +82,7 @@ const Spot = {
                 description: updatedData.description !== undefined
                     ? String(updatedData.description).trim()
                     : (spot.description || ''),
+                image: updatedData.image !== undefined ? safeImage(updatedData.image) : (spot.image || ''),
                 updatedAt: new Date().toISOString()
             };
             return updated;

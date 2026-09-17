@@ -87,6 +87,41 @@ const SS = (function () {
         return '★★★★★'.slice(0, r) + '☆☆☆☆☆'.slice(0, 5 - r);
     }
 
+    /**
+     * Works out whether a spot is open, from an hours string like
+     * "8:00 AM - 6:00 PM" or "08:00-18:00".
+     * Returns true / false, or null when the hours aren't set or can't be read —
+     * callers must treat null as "unknown", never as closed.
+     */
+    function isOpenNow(hours) {
+        const text = String(hours || '').trim();
+        if (!text) return null;
+
+        const parts = text.split(/[-–—]|\bto\b/i);
+        if (parts.length < 2) return null;
+
+        const toMinutes = (chunk) => {
+            const m = String(chunk).trim().match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+            if (!m) return null;
+            let h = parseInt(m[1], 10);
+            const min = m[2] ? parseInt(m[2], 10) : 0;
+            const ampm = (m[3] || '').toLowerCase();
+            if (h > 23 || min > 59) return null;
+            if (ampm === 'pm' && h < 12) h += 12;
+            if (ampm === 'am' && h === 12) h = 0;
+            return h * 60 + min;
+        };
+
+        const open = toMinutes(parts[0]);
+        const close = toMinutes(parts[1]);
+        if (open === null || close === null) return null;
+
+        const now = new Date();
+        const mins = now.getHours() * 60 + now.getMinutes();
+        // handles places that close after midnight
+        return close > open ? (mins >= open && mins < close) : (mins >= open || mins < close);
+    }
+
     function when(iso) {
         if (!iso) return '';
         const d = new Date(iso);
@@ -190,6 +225,7 @@ const SS = (function () {
             { key: 'add',     href: '/add-spot',  label: admin ? 'Add Spot' : 'Request Spot', icon: 'i-plus' }
         ];
         if (admin) links.push({ key: 'pending', href: '/admin/pending', label: 'Review Requests', icon: 'i-doc' });
+        if (admin) links.push({ key: 'users', href: '/admin/users', label: 'Users', icon: 'i-users' });
         links.push({ key: 'about',   href: '/about',   label: 'About',   icon: 'i-info' });
         links.push({ key: 'contact', href: '/contact', label: 'Contact', icon: 'i-mail' });
         return links;
@@ -257,6 +293,6 @@ const SS = (function () {
         });
     });
 
-    return { esc, icon, availability, hasWifi, isQuiet, stars, when, user, toast, ready,
+    return { esc, icon, availability, hasWifi, isQuiet, isOpenNow, stars, when, user, toast, ready,
              theme: { active: activeTheme, apply: applyTheme, toggle: toggleTheme } };
 })();

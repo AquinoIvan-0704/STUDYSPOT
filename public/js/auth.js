@@ -93,8 +93,10 @@
         $('registerForm').addEventListener('submit', function (e) {
             const u = $('reg-username').value.trim();
             const p = $('reg-password').value;
+            const c = ($('reg-confirm') || {}).value;
             if (u.length < 3) { e.preventDefault(); SS.toast('Username must be at least 3 characters.', 'error'); }
             else if (p.length < 6) { e.preventDefault(); SS.toast('Password must be at least 6 characters.', 'error'); }
+            else if (c !== undefined && c !== p) { e.preventDefault(); SS.toast('The two passwords do not match.', 'error'); }
         });
     });
 })();

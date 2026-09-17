@@ -38,12 +38,44 @@
         <label class="sr-only" for="searchInput">Search spots</label>
         <input type="search" id="searchInput" placeholder="Search by name or city...">
       </div>
+
+      <label class="sr-only" for="sortSelect">Sort spots</label>
+      <select id="sortSelect" class="sort-select">
+        <option value="rating">Highest rated</option>
+        <option value="seats">Most seats</option>
+        <option value="name">Name (A–Z)</option>
+        <option value="newest">Newest first</option>
+        <option value="reviews">Most reviewed</option>
+      </select>
+
       <span class="count" id="resultCount"></span>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+      <button type="button" class="filter-chip" data-filter="wifi">
+        <svg class="icon icon-sm"><use href="#i-wifi"/></svg> Free Wi-Fi
+      </button>
+      <button type="button" class="filter-chip" data-filter="quiet">
+        <svg class="icon icon-sm"><use href="#i-quiet"/></svg> Quiet Spaces
+      </button>
+      <button type="button" class="filter-chip" data-filter="seats">
+        <svg class="icon icon-sm"><use href="#i-users"/></svg> Many Seats
+      </button>
+      <button type="button" class="filter-chip" data-filter="open">
+        <svg class="icon icon-sm"><use href="#i-clock"/></svg> Open Now
+      </button>
+      <button type="button" class="btn btn-ghost btn-sm hidden" id="clearFilters">
+        <svg class="icon icon-sm"><use href="#i-x"/></svg> Clear
+      </button>
     </div>
 
     <div class="spot-rows" id="spotRows">
       <div class="skeleton" style="height:170px"></div>
       <div class="skeleton" style="height:170px"></div>
+    </div>
+
+    <div class="more-wrap">
+      <button type="button" class="btn btn-ghost hidden" id="showMore"></button>
     </div>
 
   </div>

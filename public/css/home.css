@@ -92,3 +92,8 @@
     .searchbar .btn { width: 100%; }
     .hero-chips { gap: 14px 18px; }
 }
+
+/* hero chips link through to the filtered spot list */
+a.chip { transition: color .15s, transform .12s; }
+a.chip:hover { color: #fff; transform: translateY(-1px); }
+a.chip:hover .icon { color: #fff; }

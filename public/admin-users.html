@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('studyspot-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<title>Manage Users — StudySpot Admin</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/admin-users.js" defer></script>
+</head>
+<body>
+
+<header data-topbar="users"></header>
+
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Manage Users</h1>
+      <p>Promote admins, demote members, remove accounts.</p>
+    </div>
+    <a class="btn btn-ghost" href="/admin/pending">
+      <svg class="icon icon-sm"><use href="#i-doc"/></svg> Review requests
+    </a>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell">
+
+    <div class="stat-row">
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-users"/></svg>
+        <div class="num" id="statUsers">—</div>
+        <div class="lbl">Registered accounts</div>
+      </div>
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-shield"/></svg>
+        <div class="num" id="statAdmins">—</div>
+        <div class="lbl">Admins</div>
+      </div>
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-star"/></svg>
+        <div class="num" id="statReviews">—</div>
+        <div class="lbl">Reviews written</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <svg class="icon"><use href="#i-users"/></svg>
+      <h2>Accounts</h2>
+    </div>
+
+    <div class="list" id="userList">
+      <div class="skeleton" style="height:110px"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer data-footer></footer>
+</body>
+</html>

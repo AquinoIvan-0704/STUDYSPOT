@@ -63,6 +63,24 @@ const User = {
         return updated;
     },
 
+    /** Promote or demote. Guarded by countAdmins() in the route. */
+    setRole: function (username, role) {
+        return this.update(username, { role: role === 'admin' ? 'admin' : 'user' });
+    },
+
+    remove: function (username) {
+        const users = this.getAll();
+        const next = users.filter(u =>
+            String(u.username).toLowerCase() !== String(username).toLowerCase());
+        const removed = next.length !== users.length;
+        if (removed) this.saveAll(next);
+        return removed;
+    },
+
+    countAdmins: function () {
+        return this.getAll().filter(u => u.role === 'admin').length;
+    },
+
     /** Never hand the password hash to the browser. */
     safe: function (user) {
         if (!user) return null;

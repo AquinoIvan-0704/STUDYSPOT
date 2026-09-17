@@ -144,6 +144,9 @@ app.post('/signup', async (req, res) => {
 
         if (username.length < 3) return flash(res, '/signup', null, 'Username must be at least 3 characters.');
         if (password.length < 6) return flash(res, '/signup', null, 'Password must be at least 6 characters.');
+        if (req.body.confirm !== undefined && req.body.confirm !== password) {
+            return flash(res, '/signup', null, 'The two passwords do not match.');
+        }
 
         if (User.findOne({ username })) return flash(res, '/signup', null, 'That username is taken.');
         if (email && User.findOne({ email })) return flash(res, '/signup', null, 'That email is already registered.');
@@ -176,6 +179,7 @@ app.get('/add-spot', requireLogin, (req, res) => {
 
 app.get('/edit-spot/:id', requireAdmin, (req, res) => res.sendFile(page('edit-spot.html')));
 app.get('/admin/pending', requireAdmin, (req, res) => res.sendFile(page('admin-pending.html')));
+app.get('/admin/users',   requireAdmin, (req, res) => res.sendFile(page('admin-users.html')));
 app.get('/profile',       requireLogin, (req, res) => res.sendFile(page('profile.html')));
 app.get('/request-sent',  requireLogin, (req, res) => res.sendFile(page('request-sent.html')));
 
@@ -259,7 +263,10 @@ app.post('/api/decline-spot/:id', requireAdmin, (req, res) => {
    API — reviews
    ========================================================================== */
 
-app.get('/api/spots/:id/reviews', (req, res) => res.json(Review.getBySpotId(req.params.id)));
+app.get('/api/spots/:id/reviews', (req, res) => {
+    const mine = req.user ? Review.findByUserAndSpot(req.user.username, req.params.id) : null;
+    res.json({ reviews: Review.getBySpotId(req.params.id), mine: mine || null });
+});
 
 app.post('/api/spots/:id/reviews', requireLogin, (req, res) => {
     const spot = Spot.findById(req.params.id);
@@ -269,14 +276,14 @@ app.post('/api/spots/:id/reviews', requireLogin, (req, res) => {
     if (!rating || rating < 1 || rating > 5) return flash(res, '/spots', null, 'Pick a rating from 1 to 5.');
     if (!String(req.body.comment || '').trim()) return flash(res, '/spots', null, 'Write a short comment.');
 
-    Review.create({
+    const { updated } = Review.save({
         spotId: req.params.id,
         username: req.user.username,
         rating,
         comment: req.body.comment
     });
 
-    flash(res, '/spots', 'Review posted.');
+    flash(res, `/spots#spot-${req.params.id}`, updated ? 'Your review was updated.' : 'Review posted.');
 });
 
 /** A review can be removed by whoever wrote it, or by an admin. */
@@ -327,6 +334,56 @@ app.post('/api/contact', (req, res) => {
     });
 
     res.json({ ok: true, id: saved.id });
+});
+
+/* ---------- user management (admin) ---------- */
+
+app.get('/api/users', requireAdmin, (req, res) => {
+    const users = User.getAll().map(u => {
+        const safe = User.safe(u);
+        return {
+            ...safe,
+            spotCount: Spot.getAll().filter(s =>
+                String(s.addedBy).toLowerCase() === String(u.username).toLowerCase()).length,
+            reviewCount: Review.getByUser(u.username).length,
+            pendingCount: PendingSpot.countBy(u.username),
+            isYou: u.username === req.user.username
+        };
+    });
+    res.json(users);
+});
+
+app.post('/api/users/:username/role', requireAdmin, (req, res) => {
+    const target = User.findOne({ username: req.params.username });
+    if (!target) return flash(res, '/admin/users', null, 'That account no longer exists.');
+
+    const role = req.body.role === 'admin' ? 'admin' : 'user';
+
+    if (target.username === req.user.username && role !== 'admin') {
+        return flash(res, '/admin/users', null, "You can't remove your own admin access.");
+    }
+    if (target.role === 'admin' && role !== 'admin' && User.countAdmins() <= 1) {
+        return flash(res, '/admin/users', null, 'There has to be at least one admin.');
+    }
+
+    User.setRole(target.username, role);
+    flash(res, '/admin/users', `${target.username} is now ${role === 'admin' ? 'an admin' : 'a member'}.`);
+});
+
+app.post('/api/users/:username/delete', requireAdmin, (req, res) => {
+    const target = User.findOne({ username: req.params.username });
+    if (!target) return flash(res, '/admin/users', null, 'That account no longer exists.');
+
+    if (target.username === req.user.username) {
+        return flash(res, '/admin/users', null, "You can't delete your own account while signed in.");
+    }
+    if (target.role === 'admin' && User.countAdmins() <= 1) {
+        return flash(res, '/admin/users', null, 'There has to be at least one admin.');
+    }
+
+    User.remove(target.username);
+    Review.removeByUser(target.username);        // their reviews go with them
+    flash(res, '/admin/users', `Deleted ${target.username}.`);
 });
 
 app.get('/api/messages', requireAdmin, (req, res) => res.json(Message.getAll()));
