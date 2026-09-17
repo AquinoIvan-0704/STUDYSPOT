@@ -1,0 +1,94 @@
+/* ==========================================================================
+   home.css — dashboard hero, search bar, stat card, two-column layout
+   ========================================================================== */
+
+.hero { position: relative; overflow: hidden; background: #0b1224; }
+.hero-bg { position: absolute; inset: 0; }
+
+/* library backdrop built from gradients — no image files required */
+.hero-shelves {
+    position: absolute; inset: -12% -3% -3% -3%;
+    opacity: .8;
+    background-image:
+        repeating-linear-gradient(0deg,
+            rgba(38,24,14,.96) 0 14px, rgba(92,58,34,.75) 14px 17px,
+            rgba(10,14,28,0) 17px 104px),
+        repeating-linear-gradient(90.6deg,
+            rgba(206,152,92,.5) 0 13px, rgba(118,72,42,.55) 13px 25px,
+            rgba(228,190,134,.4) 25px 40px, rgba(84,52,32,.6) 40px 51px,
+            rgba(168,106,60,.45) 51px 68px, rgba(132,84,50,.5) 68px 79px),
+        linear-gradient(180deg, rgba(60,38,22,.5), rgba(18,12,8,.7));
+    filter: blur(1.1px);
+    transform: perspective(900px) rotateY(-4deg) scale(1.04);
+}
+.hero-glow {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(60% 80% at 78% 18%, rgba(255,214,150,.35), transparent 62%),
+        radial-gradient(45% 60% at 12% 85%, rgba(37,99,235,.28), transparent 70%);
+}
+.hero-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg,
+        rgba(7,13,31,.95) 0%, rgba(7,13,31,.88) 38%,
+        rgba(7,13,31,.62) 70%, rgba(7,13,31,.5) 100%);
+}
+
+.hero-inner { position: relative; padding: 62px 0 54px; display: flex; gap: 32px; align-items: flex-start; }
+.hero-copy { max-width: 720px; flex: 1 1 auto; }
+
+.hero h1 {
+    color: #fff; font-size: 52px; font-weight: 800;
+    letter-spacing: -1.4px; line-height: 1.08; margin-bottom: 14px;
+}
+.hero h1 em { font-style: normal; color: var(--blue-light); display: block; }
+.hero .lede { color: #cbd5e1; font-size: 16.5px; max-width: 430px; margin-bottom: 26px; }
+
+.searchbar {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 12px; padding: 7px 7px 7px 16px;
+    box-shadow: var(--shadow-lg); max-width: 720px;
+}
+.searchbar > .icon { color: var(--muted); }
+.searchbar input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 15px; color: var(--ink); padding: 12px 0;
+}
+.searchbar input:focus { box-shadow: none; }
+.searchbar .btn { padding: 13px 30px; font-size: 15px; }
+
+.hero-chips { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 22px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; color: #dbeafe; font-size: 14px; font-weight: 500; }
+.chip .icon { color: var(--blue-light); }
+
+.statcard {
+    flex: none; width: 212px; margin: 6px 0 0 auto;
+    background: #fff; border-radius: var(--radius);
+    padding: 20px 22px; box-shadow: var(--shadow-lg);
+}
+.statcard .top { display: flex; align-items: center; gap: 12px; }
+.statcard .icon { width: 26px; height: 26px; color: var(--blue); }
+.statcard .num { font-size: 34px; font-weight: 800; color: var(--blue); line-height: 1; }
+.statcard .lbl { font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 8px; }
+.statcard .sub { font-size: 13px; color: var(--muted); }
+
+/* two-column: spot list + detail panel */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 24px; align-items: start; }
+
+@media (max-width: 1140px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .hero-inner { flex-direction: column; }
+    .statcard { width: 100%; max-width: 720px; margin-left: 0; }
+}
+@media (max-width: 900px) {
+    .hero h1 { font-size: 40px; }
+}
+@media (max-width: 640px) {
+    .hero-inner { padding: 40px 0 36px; }
+    .hero h1 { font-size: 32px; letter-spacing: -.8px; }
+    .hero .lede { font-size: 15px; }
+    .searchbar { flex-wrap: wrap; padding: 10px; gap: 8px; }
+    .searchbar input { width: 100%; flex-basis: 100%; padding: 6px 4px; }
+    .searchbar .btn { width: 100%; }
+    .hero-chips { gap: 14px 18px; }
+}

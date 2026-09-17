@@ -1,45 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Request Spot - StudySpot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Study Spot — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/forms.css">
+<script src="/js/ui.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Request Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Request a New Study Spot</h2>
-        <p>Your request will be sent to the admin for review.</p>
-        <form action="/api/spots" method="POST">
-            <input type="text" name="name" placeholder="Spot Name" required><br><br>
-            <input type="text" name="city" placeholder="City / Location" required><br><br>
-            <input type="number" name="seats" placeholder="Seats Available" required><br><br>
-            
-            <select name="wifi" required>
-                <option value="" disabled selected>Select Wi-Fi Status</option>
-                <option value="Available">Available</option>
-                <option value="No Wi-Fi">No Wi-Fi</option>
-            </select><br><br>
 
-            <select name="noise" required>
-                <option value="" disabled selected>Select Noise Level</option>
-                <option value="Quiet">Quiet</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Loud">Loud</option>
-            </select><br><br>
+<header data-topbar="add"></header>
 
-            <button type="submit">Submit Request</button>
-        </form>
-    </main>
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Request a Study Spot</h1>
+      <p>Know a good place? Send it in and an admin will review it.</p>
+    </div>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell form-wrap">
+    <div class="card form-card">
+
+      <div class="form-note">
+        <svg class="icon icon-sm"><use href="#i-info"/></svg>
+        <span>Your request goes to the admin queue first. Once approved it appears on the Spots page for everyone.</span>
+      </div>
+
+      <form action="/api/spots" method="POST">
+        <div class="field-grid">
+          <div class="field full">
+            <label for="name">Spot name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Community Library" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="city">City / location</label>
+            <input type="text" id="city" name="city" placeholder="e.g. San Pablo City" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="seats">Seats available</label>
+            <input type="number" id="seats" name="seats" min="0" max="9999" placeholder="20" required>
+          </div>
+
+          <div class="field">
+            <label for="wifi">Wi-Fi</label>
+            <select id="wifi" name="wifi" required>
+              <option value="" disabled selected>Select Wi-Fi status</option>
+              <option value="Available">Available</option>
+              <option value="No Wi-Fi">No Wi-Fi</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="noise">Noise level</label>
+            <select id="noise" name="noise" required>
+              <option value="" disabled selected>Select noise level</option>
+              <option value="Quiet">Quiet</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Loud">Loud</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="hours">Opening hours <span class="muted">(optional)</span></label>
+            <input type="text" id="hours" name="hours" placeholder="e.g. 8:00 AM - 6:00 PM" maxlength="60">
+          </div>
+
+          <div class="field full">
+            <label for="description">Why is it a good study spot? <span class="muted">(optional)</span></label>
+            <textarea id="description" name="description" maxlength="400"
+                      placeholder="Tell the admin what makes this place worth adding."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg class="icon icon-sm"><use href="#i-send"/></svg> Submit Request
+          </button>
+          <a class="btn btn-ghost" href="/studyspot">Cancel</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

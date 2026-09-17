@@ -1,0 +1,62 @@
+/* ==========================================================================
+   spots.css — the full "All study spots" listing page
+   ========================================================================== */
+
+.list-toolbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.list-toolbar .input-group { flex: 1 1 320px; max-width: 420px; }
+.list-toolbar .count { font-size: 14px; color: var(--muted); }
+
+.spot-rows { display: flex; flex-direction: column; gap: 16px; }
+
+.spot-row {
+    display: grid; grid-template-columns: 210px minmax(0, 1fr);
+    overflow: hidden; scroll-margin-top: 90px;
+}
+.spot-row .thumb { height: 100%; min-height: 168px; }
+.spot-row-main { padding: 18px 20px; min-width: 0; }
+
+.spot-row-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.spot-row-head h3 { font-size: 18px; }
+.spot-row-head .badge { margin-top: 2px; }
+.spot-row-head .admin-actions { margin-left: auto; display: flex; gap: 8px; }
+
+.spot-row .spot-city { margin-bottom: 12px; }
+
+.fact-row { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.fact-row .fact { font-size: 13.5px; }
+
+.spot-row-foot {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--line);
+}
+.spot-row-foot .btn { margin-left: auto; }
+
+/* expandable reviews block */
+.reviews-block { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.reviews-block[hidden] { display: none; }
+.reviews-block h4 { font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+
+.review-form {
+    background: var(--line-soft); border-radius: var(--radius-sm);
+    padding: 14px; margin-top: 12px;
+}
+.review-form .review-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.review-form .review-row .grow { flex: 1 1 240px; }
+.review-form label.form-label { margin-bottom: 4px; }
+
+.login-prompt {
+    background: var(--blue-50); border: 1px solid var(--blue-100);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    font-size: 13.5px; color: var(--blue-dark); margin-top: 12px;
+}
+
+@media (max-width: 720px) {
+    .spot-row { grid-template-columns: 1fr; }
+    .spot-row .thumb { min-height: 130px; height: 130px; }
+    .spot-row-main { padding: 16px; }
+    .spot-row-head .admin-actions { margin-left: 0; width: 100%; }
+    .spot-row-foot .btn { margin-left: 0; width: 100%; }
+}

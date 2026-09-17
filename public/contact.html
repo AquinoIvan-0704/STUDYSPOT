@@ -1,51 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Contact - StudySpot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/forms.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/contact.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Contact Us</h2>
-        <p>Get in touch with us for any questions or support.</p>
-    </main>
-    <script>
-    fetch('/api/current-user')
-        .then(res => res.json())
-        .then(user => {
-            if (user && user.role !== 'admin') {
-                const links = document.querySelectorAll('nav a');
-                links.forEach(link => {
-                    if (link.getAttribute('href') && link.getAttribute('href').includes('add-spot')) {
-                        link.textContent = 'Request Spot';
-                    }
-                });
-            }
-        });
-      
-    fetch('/api/current-user')
-        .then(res => res.json())
-        .then(user => {
-            if (user && user.role === 'admin') {
-                const nav = document.querySelector('nav');
-                if (nav && !document.getElementById('review-link')) {
-                    nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
-                }
-            }
-        });
-</script>
-</script>
+
+<header data-topbar="contact"></header>
+
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Contact Us</h1>
+      <p>Questions, corrections, or a spot that shouldn't be listed — tell us.</p>
+    </div>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell form-wrap">
+    <div class="card form-card">
+
+      <div id="sent" class="alert alert-success hidden">
+        <svg class="icon icon-sm"><use href="#i-check"/></svg>
+        <span>Thanks — your message has been sent. We'll get back to you by email.</span>
+      </div>
+
+      <form id="contactForm">
+        <div class="field-grid">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" required maxlength="80">
+          </div>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" required maxlength="120"
+                   placeholder="you@example.com">
+          </div>
+          <div class="field full">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" maxlength="120"
+                   placeholder="What's this about?">
+          </div>
+          <div class="field full">
+            <label for="body">Message</label>
+            <textarea id="body" name="body" required maxlength="2000"
+                      placeholder="Tell us what's going on..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="sendBtn">
+            <svg class="icon icon-sm"><use href="#i-send"/></svg> Send message
+          </button>
+          <a class="btn btn-ghost" href="/studyspot">Back home</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

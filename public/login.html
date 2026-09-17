@@ -1,131 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
-    <title>StudySpot - Login / Register</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login or Register — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/auth.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/auth.js" defer></script>
 </head>
-<body>
+<body class="auth">
 
-    <div class="container" id="container">
+<div class="auth-shell">
 
-        <div class="form-panel sign-up">
-            <form action="/signup" method="POST">
-                <h2>Registration</h2>
-                <div class="input-box">
-                    <input type="text" name="username" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-  
-                <div class="input-box">
-                    <input type="password" name="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <button type="submit">Register</button>
+  <div class="auth-brand">
+    <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M20 3.5c-6.35 0-11.5 5.15-11.5 11.5 0 8.6 11.5 21.5 11.5 21.5S31.5 23.6 31.5 15c0-6.35-5.15-11.5-11.5-11.5z"
+            fill="none" stroke="#60a5fa" stroke-width="2.6"/>
+      <path d="M13.8 11.4h4.3c1 0 1.9.8 1.9 1.9v7.4c0-1-.9-1.9-1.9-1.9h-4.3z" fill="#60a5fa"/>
+      <path d="M26.2 11.4h-4.3c-1 0-1.9.8-1.9 1.9v7.4c0-1 .9-1.9 1.9-1.9h4.3z" fill="#60a5fa" opacity=".72"/>
+    </svg>
+    <div>
+      <div class="brand-name">Study<span>Spot</span></div>
+      <div class="brand-tag">Find. Study. Succeed.</div>
+    </div>
+  </div>
 
-                <div class="social-login">
-                    <p>or register with social platforms</p>
-                    <div class="social-buttons">
-                        <a href="/auth/google" class="social-btn"><i class="fab fa-google"></i></a>
-                        <a href="/auth/facebook" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                        <a href="/auth/github" class="social-btn"><i class="fab fa-github"></i></a>
-                        <a href="/auth/linkedin" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </form>
+  <div class="auth-card" id="authCard">
+
+    <!-- ---------- register ---------- -->
+    <div class="auth-panel register">
+      <form action="/signup" method="POST" id="registerForm">
+        <h2>Create account</h2>
+        <p class="sub">Join and start sharing study spots.</p>
+
+        <div class="field">
+          <label for="reg-username">Username</label>
+          <div class="input-group">
+            <svg class="icon icon-sm"><use href="#i-user"/></svg>
+            <input type="text" id="reg-username" name="username" required minlength="3" maxlength="30"
+                   autocomplete="username" placeholder="At least 3 characters">
+          </div>
         </div>
 
-      
-        <div class="form-panel sign-in">
-            <form action="/login" method="POST">
-                <h2>Login</h2>
-                <div class="input-box">
-                    <input type="text" name="username" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" name="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <button type="submit">Login</button>
-
-                <div class="social-login">
-                    <p>or login with social platforms</p>
-                    <div class="social-buttons">
-                        <a href="/auth/google" class="social-btn"><i class="fab fa-google"></i></a>
-                        <a href="/auth/facebook" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                        <a href="/auth/github" class="social-btn"><i class="fab fa-github"></i></a>
-                        <a href="/auth/linkedin" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </form>
+        <div class="field">
+          <label for="reg-email">Email</label>
+          <div class="input-group">
+            <svg class="icon icon-sm"><use href="#i-mail"/></svg>
+            <input type="email" id="reg-email" name="email" maxlength="120"
+                   autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="hint">Optional, but lets you sign in with your email too.</div>
         </div>
 
-        <div class="cover-panel parked-left" id="coverPanel"></div>
-
-        <div class="overlay-text login-text visible" id="loginText">
-            <h2>Hello, Welcome</h2>
-            <p>Don't have an Account?</p>
-            <button id="signUpBtn" type="button">Register</button>
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <div class="input-group">
+            <svg class="icon icon-sm"><use href="#i-lock"/></svg>
+            <input type="password" id="reg-password" name="password" required minlength="6"
+                   autocomplete="new-password" placeholder="At least 6 characters">
+          </div>
         </div>
 
-        <div class="overlay-text signup-text" id="signupText">
-            <h2>Welcome Back!</h2>
-            <p>Already have an Account?</p>
-            <button id="signInBtn" type="button">Login</button>
-        </div>
-
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
     </div>
 
-    <script>
-        const container = document.getElementById('container');
-        const coverPanel = document.getElementById('coverPanel');
-        const loginText = document.getElementById('loginText');
-        const signupText = document.getElementById('signupText');
-        const signUpBtn = document.getElementById('signUpBtn');
-        const signInBtn = document.getElementById('signInBtn');
+    <!-- ---------- login ---------- -->
+    <div class="auth-panel login">
+      <form action="/login" method="POST" id="loginForm">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in to review and add study spots.</p>
 
-        let animating = false;
-        const PHASE_MS = 600;
+        <div class="field">
+          <label for="log-username">Username or email</label>
+          <div class="input-group">
+            <svg class="icon icon-sm"><use href="#i-user"/></svg>
+            <input type="text" id="log-username" name="username" required
+                   autocomplete="username" placeholder="ivan  ·  you@example.com">
+          </div>
+        </div>
 
-        function goToSignUp() {
-            if (animating || container.classList.contains('right-panel-active')) return;
-            animating = true;
+        <div class="field">
+          <label for="log-password">Password</label>
+          <div class="input-group">
+            <svg class="icon icon-sm"><use href="#i-lock"/></svg>
+            <input type="password" id="log-password" name="password" required
+                   autocomplete="current-password" placeholder="Your password">
+          </div>
+        </div>
 
-            container.classList.add('right-panel-active');
-            loginText.classList.remove('visible');
-            coverPanel.classList.remove('parked-left');
-            coverPanel.classList.add('covering');
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+    </div>
 
-            setTimeout(() => {
-                coverPanel.classList.remove('covering');
-                coverPanel.classList.add('parked-right');
-                signupText.classList.add('visible');
-                animating = false;
-            }, PHASE_MS);
-        }
+    <div class="auth-cover parked-left" id="authCover"></div>
 
-        function goToSignIn() {
-            if (animating || !container.classList.contains('right-panel-active')) return;
-            animating = true;
+    <div class="auth-overlay for-login visible" id="overlayLogin">
+      <h2>Hello, welcome</h2>
+      <p>Don't have an account yet?</p>
+      <button type="button" class="btn" id="toRegister">Register</button>
+    </div>
 
-            container.classList.remove('right-panel-active');
-            signupText.classList.remove('visible');
-            coverPanel.classList.remove('parked-right');
-            coverPanel.classList.add('covering');
+    <div class="auth-overlay for-register" id="overlayRegister">
+      <h2>Welcome back!</h2>
+      <p>Already have an account?</p>
+      <button type="button" class="btn" id="toLogin">Log in</button>
+    </div>
 
-            setTimeout(() => {
-                coverPanel.classList.remove('covering');
-                coverPanel.classList.add('parked-left');
-                loginText.classList.add('visible');
-                animating = false;
-            }, PHASE_MS);
-        }
+    <div class="auth-switch" id="switchStrip"></div>
+  </div>
 
-        signUpBtn.addEventListener('click', goToSignUp);
-        signInBtn.addEventListener('click', goToSignIn);
-    </script>
+  <p class="auth-note">Browse without an account: <a href="/studyspot">go to StudySpot</a></p>
+</div>
+
 </body>
 </html>

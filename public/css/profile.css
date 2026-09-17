@@ -1,0 +1,27 @@
+/* ==========================================================================
+   profile.css — account page
+   ========================================================================== */
+
+.profile-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+
+.profile-card { text-align: center; position: sticky; top: 92px; }
+
+.avatar {
+    width: 84px; height: 84px; margin: 0 auto 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #38bdf8);
+    color: #fff; font-size: 32px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-md);
+}
+.profile-card h2 { font-size: 20px; word-break: break-word; }
+.profile-card .role { margin-top: 8px; }
+
+.profile-meta { margin-top: 18px; text-align: left; }
+.profile-meta .row-item { font-size: 13.5px; }
+.profile-meta .v { word-break: break-all; }
+
+@media (max-width: 1000px) {
+    .profile-layout { grid-template-columns: minmax(0, 1fr); }
+    .profile-card { position: static; }
+}

@@ -1,0 +1,104 @@
+/* ==========================================================================
+   layout.css — page shell, top navigation, page header, footer
+   ========================================================================== */
+
+.shell { max-width: 1400px; margin: 0 auto; padding: 0 28px; }
+.shell-narrow { max-width: 860px; }
+
+/* ---------- top bar ---------- */
+
+.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+}
+.topbar-inner { display: flex; align-items: center; gap: 24px; height: 72px; }
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { width: 38px; height: 38px; flex: none; }
+.brand-name { font-size: 21px; font-weight: 800; color: var(--ink); letter-spacing: -.4px; }
+.brand-name span { color: var(--blue); }
+.brand-tag { font-size: 10.5px; color: var(--muted); letter-spacing: .2px; margin-top: -3px; }
+
+.mainnav { display: flex; align-items: center; gap: 4px; margin: 0 auto; }
+.navlink {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 15px; border-radius: var(--radius-sm);
+    font-size: 14.5px; font-weight: 500; color: var(--slate);
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+}
+.navlink:hover { background: var(--line-soft); color: var(--ink); }
+.navlink.active { background: var(--blue); color: #fff; font-weight: 600; box-shadow: var(--shadow-sm); }
+.navlink.active:hover { background: var(--blue-dark); color: #fff; }
+
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.topbar-actions .btn { padding: 9px 16px; font-weight: 500; }
+.topbar-actions .btn-icon { padding: 9px; }
+
+/* ---------- page header (inner pages) ---------- */
+
+.page-head {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+}
+.page-head .shell { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.page-head h1 { font-size: 27px; }
+.page-head p { color: var(--muted); font-size: 14.5px; margin-top: 3px; }
+.page-head .btn { margin-left: auto; }
+
+.page-body { padding: 28px 0 64px; }
+
+/* section heading inside content */
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.section-head .icon { color: var(--blue); width: 20px; height: 20px; }
+.section-head .link {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    color: var(--blue); font-size: 14px; font-weight: 600;
+}
+
+/* ---------- footer ---------- */
+
+.site-footer {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 26px 0;
+    margin-top: auto;
+}
+.site-footer .shell {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    font-size: 13.5px; color: var(--muted);
+}
+.site-footer nav { display: flex; gap: 18px; flex-wrap: wrap; margin-left: auto; }
+.site-footer nav a { color: var(--muted); }
+.site-footer nav a:hover { color: var(--blue); }
+
+/* keeps the footer at the bottom on short pages */
+body.has-footer { display: flex; flex-direction: column; }
+body.has-footer .page-body,
+body.has-footer main { flex: 1 0 auto; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+    /* nav becomes a horizontally scrollable strip instead of disappearing */
+    .topbar { position: static; }
+    .topbar-inner { flex-wrap: wrap; height: auto; padding: 12px 0 8px; gap: 12px; }
+    .mainnav {
+        order: 3; width: 100%; margin: 0; gap: 6px;
+        overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+    }
+    .mainnav::-webkit-scrollbar { display: none; }
+    .topbar-actions { margin-left: auto; }
+    .page-head { padding: 22px 0; }
+    .page-head h1 { font-size: 23px; }
+    .page-head .btn { margin-left: 0; }
+}
+
+@media (max-width: 640px) {
+    .shell { padding: 0 16px; }
+    .brand-tag { display: none; }
+    .site-footer .shell { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .site-footer nav { margin-left: 0; gap: 14px; }
+}

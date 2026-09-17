@@ -1,54 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Review Requests - StudySpot Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Requests — StudySpot Admin</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/admin.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot Admin</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/admin/pending">Review Requests</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Pending Spot Requests</h2>
-        <div id="pending-container"></div>
-    </main>
 
-    <script>
-        fetch('/api/pending-spots')
-            .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('pending-container');
-                if (data.length === 0) {
-                    container.innerHTML = '<p>No pending spot requests.</p>';
-                    return;
-                }
-                container.innerHTML = '';
-                data.forEach(spot => {
-                    container.innerHTML += `
-                        <div>
-                            <h3>${spot.name}</h3>
-                            <p>City: ${spot.city} | Seats: ${spot.seats} | Wi-Fi: ${spot.wifi} | Noise: ${spot.noise}</p>
-                            <form action="/api/approve-spot/${spot.id}" method="POST" style="display:inline;">
-                                <button type="submit">Approve</button>
-                            </form>
-                            <form action="/api/decline-spot/${spot.id}" method="POST" style="display:inline;">
-                                <button type="submit" onclick="return confirm('Are you sure you want to decline this request?');">Decline</button>
-                            </form>
-                            <hr>
-                        </div>
-                    `;
-                });
-            });
-    </script>
+<header data-topbar="pending"></header>
+
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Admin Review</h1>
+      <p>Approve spot requests and read messages from the contact form.</p>
+    </div>
+    <a class="btn btn-ghost" href="/spots">
+      <svg class="icon icon-sm"><use href="#i-pin"/></svg> All spots
+    </a>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell">
+
+    <div class="stat-row" id="stats">
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-doc"/></svg>
+        <div class="num" id="statPending">—</div>
+        <div class="lbl">Pending requests</div>
+      </div>
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-pin"/></svg>
+        <div class="num" id="statSpots">—</div>
+        <div class="lbl">Published spots</div>
+      </div>
+      <div class="stat">
+        <svg class="icon icon-lg"><use href="#i-inbox"/></svg>
+        <div class="num" id="statMessages">—</div>
+        <div class="lbl">Messages</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <svg class="icon"><use href="#i-doc"/></svg>
+      <h2>Pending Spot Requests</h2>
+    </div>
+    <div class="list" id="pendingList">
+      <div class="skeleton" style="height:120px"></div>
+    </div>
+
+    <div class="section-head" style="margin-top:34px">
+      <svg class="icon"><use href="#i-inbox"/></svg>
+      <h2>Contact Messages</h2>
+    </div>
+    <div class="list" id="messageList">
+      <div class="skeleton" style="height:110px"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

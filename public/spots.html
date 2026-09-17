@@ -1,169 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>All Spots - StudySpot</title>
-    <style>
-        .star-rating {
-            display: inline-flex;
-            flex-direction: row-reverse;
-            gap: 4px;
-        }
-        .star-rating input {
-            display: none;
-        }
-        .star-rating label {
-            font-size: 20px;
-            color: #cbd5e1;
-            cursor: pointer;
-        }
-        .star-rating input:checked ~ label,
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: #eab308;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Study Spots — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/spots.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/spots.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>All Study Spots</h2>
-        <input type="text" id="searchInput" placeholder="Search by name or city..." style="margin-bottom: 20px; padding: 6px; width: 280px;">
-        <div id="all-spots-container"></div>
-    </main>
-    <script>
-        let currentUser = null;
 
-        function renderSpots(data) {
-            const container = document.getElementById('all-spots-container');
-            if (!container) return;
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p>No study spots found.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            data.forEach(spot => {
-                let adminControls = '';
-                if (currentUser && currentUser.role === 'admin') {
-                    adminControls = ` 
-                        <a href="/edit-spot/${spot.id}">[Edit]</a>
-                        <form action="/api/delete-spot/${spot.id}" method="POST" style="display:inline;">
-                            <button type="submit" onclick="return confirm('Are you sure you want to delete this spot?');">[Delete]</button>
-                        </form>
-                    `;
-                }
-                
-                container.innerHTML += `
-                    <div>
-                        <h3>${spot.name || ''}${adminControls}</h3>
-                        <p>${spot.city || ''}</p>
-                        <p>${spot.seats || 0} seats | ${spot.wifi || ''} | ${spot.noise || ''}</p>
-                        <div id="reviews-${spot.id}" style="margin: 10px 0; font-size: 14px;"></div>
-                        <form action="/api/spots/${spot.id}/reviews" method="POST" style="margin-top: 10px;">
-                            <div class="star-rating">
-                                <input type="radio" id="star5-${spot.id}" name="rating" value="5" required><label for="star5-${spot.id}">★</label>
-                                <input type="radio" id="star4-${spot.id}" name="rating" value="4"><label for="star4-${spot.id}">★</label>
-                                <input type="radio" id="star3-${spot.id}" name="rating" value="3"><label for="star3-${spot.id}">★</label>
-                                <input type="radio" id="star2-${spot.id}" name="rating" value="2"><label for="star2-${spot.id}">★</label>
-                                <input type="radio" id="star1-${spot.id}" name="rating" value="1"><label for="star1-${spot.id}">★</label>
-                            </div>
-                            <br>
-                            <input type="text" name="comment" placeholder="Leave a review..." required style="width: 200px; padding: 4px; margin-top: 6px;">
-                            <button type="submit" style="margin-top: 6px;">Submit Review</button>
-                        </form>
-                        <hr>
-                    </div>
-                `;
+<header data-topbar="spots"></header>
 
-                fetch(`/api/spots/${spot.id}/reviews`)
-                    .then(res => res.json())
-                    .then(reviews => {
-                        const revContainer = document.getElementById(`reviews-${spot.id}`);
-                        if (reviews && reviews.length > 0) {
-                            let revHtml = '<strong>Reviews:</strong><ul style="margin: 5px 0; padding-left: 20px;">';
-                            reviews.forEach(r => {
-                                revHtml += `<li>${r.rating}★ - ${r.comment} <em>(${r.username})</em></li>`;
-                            });
-                            revHtml += '</ul>';
-                            revContainer.innerHTML = revHtml;
-                        } else {
-                            revContainer.innerHTML = '<p style="color: #64748b;">No reviews yet.</p>';
-                        }
-                    });
-            });
-        }
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>All Study Spots</h1>
+      <p>Browse every spot, read reviews, and share your own.</p>
+    </div>
+    <a class="btn btn-primary" id="addBtn" href="/add-spot">
+      <svg class="icon icon-sm"><use href="#i-plus"/></svg> Add Spot
+    </a>
+  </div>
+</div>
 
-        function fetchSpots(query = '') {
-            const url = query ? `/api/search?q=${encodeURIComponent(query)}` : '/api/spots';
-            fetch(url)
-                .then(res => res.json())
-                .then(data => renderSpots(data))
-                .catch(err => console.error('Error fetching spots:', err));
-        }
+<main class="page-body">
+  <div class="shell">
 
-        fetch('/api/current-user')
-            .then(res => res.json())
-            .then(user => {
-                currentUser = user; 
-                if (user) {
-                    const nav = document.querySelector('nav');
-                    const links = document.querySelectorAll('nav a');
-                    
-                    if (!document.getElementById('profile-link')) {
-                        nav.innerHTML += ` | <a href="/profile" id="profile-link">Profile</a>`;
-                    }
+    <div class="list-toolbar">
+      <div class="input-group">
+        <svg class="icon icon-sm"><use href="#i-search"/></svg>
+        <label class="sr-only" for="searchInput">Search spots</label>
+        <input type="search" id="searchInput" placeholder="Search by name or city...">
+      </div>
+      <span class="count" id="resultCount"></span>
+    </div>
 
-                    links.forEach(link => {
-                        const href = link.getAttribute('href');
-                        if (href && href.includes('add-spot')) {
-                            if (user.role !== 'admin') {
-                                link.textContent = 'Request Spot';
-                            }
-                        }
-                    });
+    <div class="spot-rows" id="spotRows">
+      <div class="skeleton" style="height:170px"></div>
+      <div class="skeleton" style="height:170px"></div>
+    </div>
 
-                    if (user.role === 'admin' && nav) {
-                        if (!document.getElementById('review-link')) {
-                            nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
-                        }
-                    }
-                }
+  </div>
+</main>
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const queryParam = urlParams.get('q') || '';
-                
-                if (queryParam) {
-                    const searchInput = document.getElementById('searchInput');
-                    if (searchInput) {
-                        searchInput.value = queryParam;
-                    }
-                }
-
-                fetchSpots(queryParam);
-            })
-            .catch(() => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const queryParam = urlParams.get('q') || '';
-                fetchSpots(queryParam);
-            });
-
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                fetchSpots(e.target.value);
-            });
-        }
-    </script>
+<footer data-footer></footer>
 </body>
 </html>

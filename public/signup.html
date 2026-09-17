@@ -1,25 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Sign Up - StudySpot</title>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="0; url=/signup">
+<title>Sign Up — StudySpot</title>
 </head>
 <body>
-    <h2>Create a StudySpot Account</h2>
-    <form action="/signup" method="POST">
-        <div>
-            <label>Username:</label>
-            <input type="text" name="username" required>
-        </div>
-        <br>
-        <div>
-            <label>Password:</label>
-            <input type="password" name="password" required>
-        </div>
-        <br>
-        <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="/">Login here</a></p>
+<!-- Registration now lives on the combined login screen. -->
+<p>Redirecting to <a href="/signup">the sign-up form</a>…</p>
+<script>location.replace('/signup');</script>
 </body>
 </html>

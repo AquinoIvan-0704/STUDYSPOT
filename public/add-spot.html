@@ -1,56 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Add Spot - StudySpot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add a Study Spot — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/forms.css">
+<script src="/js/ui.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Add a New Study Spot</h2>
-        <form action="/api/spots" method="POST">
-            <input type="text" name="name" placeholder="Spot Name" required><br><br>
-            <input type="text" name="city" placeholder="City / Location" required><br><br>
-            <input type="number" name="seats" placeholder="Seats Available" required><br><br>
-            
-            <select name="wifi" required>
-                <option value="" disabled selected>Select Wi-Fi Status</option>
-                <option value="Available">Available</option>
-                <option value="No Wi-Fi">No Wi-Fi</option>
-            </select><br><br>
 
-            <select name="noise" required>
-                <option value="" disabled selected>Select Noise Level</option>
-                <option value="Quiet">Quiet</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Loud">Loud</option>
-            </select><br><br>
+<header data-topbar="add"></header>
 
-            <button type="submit">Submit Spot</button>
-        </form>
-    </main>
-    <script>
-    fetch('/api/current-user')
-        .then(res => res.json())
-        .then(user => {
-            if (user && user.role === 'admin') {
-                const nav = document.querySelector('nav');
-                if (nav && !document.getElementById('review-link')) {
-                    nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
-                }
-            }
-        });
-</script>
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Add a New Study Spot</h1>
+      <p>Published straight away — you're an admin.</p>
+    </div>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell form-wrap">
+    <div class="card form-card">
+
+      <form action="/api/spots" method="POST">
+        <div class="field-grid">
+          <div class="field full">
+            <label for="name">Spot name</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Community Library" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="city">City / location</label>
+            <input type="text" id="city" name="city" placeholder="e.g. San Pablo City" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="seats">Seats available</label>
+            <input type="number" id="seats" name="seats" min="0" max="9999" placeholder="20" required>
+          </div>
+
+          <div class="field">
+            <label for="wifi">Wi-Fi</label>
+            <select id="wifi" name="wifi" required>
+              <option value="" disabled selected>Select Wi-Fi status</option>
+              <option value="Available">Available</option>
+              <option value="No Wi-Fi">No Wi-Fi</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="noise">Noise level</label>
+            <select id="noise" name="noise" required>
+              <option value="" disabled selected>Select noise level</option>
+              <option value="Quiet">Quiet</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Loud">Loud</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="hours">Opening hours <span class="muted">(optional)</span></label>
+            <input type="text" id="hours" name="hours" placeholder="e.g. 8:00 AM - 6:00 PM" maxlength="60">
+          </div>
+
+          <div class="field full">
+            <label for="description">Description <span class="muted">(optional)</span></label>
+            <textarea id="description" name="description" maxlength="400"
+                      placeholder="What is this place like? Who is it good for?"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg class="icon icon-sm"><use href="#i-check"/></svg> Publish Spot
+          </button>
+          <a class="btn btn-ghost" href="/spots">Cancel</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

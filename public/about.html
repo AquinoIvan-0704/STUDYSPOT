@@ -1,39 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>About - StudySpot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/forms.css">
+<script src="/js/ui.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>About StudySpot</h2>
-        <p>Welcome to StudySpot, your ultimate platform for discovering the quietest cafes, best libraries, and most productive workspaces around town.</p>
-        <p>Whether you need high-speed Wi-Fi, absolute silence, or a collaborative table for a group project, StudySpot helps students and remote workers find the ideal environment to focus and get things done.</p>
-    </main>
 
-    <script>
-        fetch('/api/current-user')
-            .then(res => res.json())
-            .then(user => {
-                if (user && user.role === 'admin') {
-                    const nav = document.querySelector('nav');
-                    if (nav && !document.getElementById('review-link')) {
-                        nav.innerHTML += ` | <a href="/admin/pending" id="review-link">Review Requests</a>`;
-                    }
-                }
-            });
-    </script>
+<header data-topbar="about"></header>
+
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>About StudySpot</h1>
+      <p>A community list of places that are actually good to study in.</p>
+    </div>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell form-wrap">
+
+    <div class="card card-pad">
+      <h2>What this is</h2>
+      <p style="margin-top:8px">
+        StudySpot collects the quiet cafes, libraries and reading centers around town so students
+        don't have to guess where to go. Every spot lists the things that actually decide whether
+        you can work there: how many seats it has, whether there's Wi-Fi, and how noisy it gets.
+      </p>
+
+      <h2 style="margin-top:24px">How it works</h2>
+      <div class="rows" style="margin-top:6px">
+        <div class="row-item">
+          <svg class="icon icon-sm"><use href="#i-search"/></svg>
+          <span class="k">Browse or search</span>
+          <span class="v">Filter spots by name or city</span>
+        </div>
+        <div class="row-item">
+          <svg class="icon icon-sm"><use href="#i-plus"/></svg>
+          <span class="k">Suggest a spot</span>
+          <span class="v">Members send requests, admins approve them</span>
+        </div>
+        <div class="row-item">
+          <svg class="icon icon-sm"><use href="#i-star"/></svg>
+          <span class="k">Leave a review</span>
+          <span class="v">Rate a place so others know what to expect</span>
+        </div>
+        <div class="row-item">
+          <svg class="icon icon-sm"><use href="#i-nav"/></svg>
+          <span class="k">Get directions</span>
+          <span class="v">Open any spot straight in Google Maps</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a class="btn btn-primary" href="/spots">
+          <svg class="icon icon-sm"><use href="#i-pin"/></svg> Browse study spots
+        </a>
+        <a class="btn btn-ghost" href="/contact">Contact us</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

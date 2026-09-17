@@ -1,61 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>Edit Spot - StudySpot Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Study Spot — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/forms.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/edit-spot.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot Admin</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/add-spot">Add Spot</a> | 
-            <a href="/admin/pending">Review Requests</a> | 
-            <a href="/about">About</a> | 
-            <a href="/contact">Contact</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>Edit Study Spot</h2>
-        <form id="edit-form" method="POST">
-            <label>Name: <input type="text" name="name" id="name" required></label><br><br>
-            <label>City: <input type="text" name="city" id="city" required></label><br><br>
-            <label>Seats: <input type="number" name="seats" id="seats" required></label><br><br>
-            <label>Wi-Fi: 
-                <select name="wifi" id="wifi">
-                    <option value="Available">Available</option>
-                    <option value="No Wi-Fi">No Wi-Fi</option>
-                </select>
-            </label><br><br>
-            <label>Noise: 
-                <select name="noise" id="noise">
-                    <option value="Quiet">Quiet</option>
-                    <option value="Moderate">Moderate</option>
-                    <option value="Loud">Loud</option>
-                </select>
-            </label><br><br>
-            <button type="submit">Update Spot</button>
-        </form>
-    </main>
 
-    <script>
-        const spotId = window.location.pathname.split('/').pop();
-        document.getElementById('edit-form').action = `/api/edit-spot/${spotId}`;
+<header data-topbar="spots"></header>
 
-        fetch(`/api/spot/${spotId}`)
-            .then(res => res.json())
-            .then(spot => {
-                if (spot && spot.name) {
-                    document.getElementById('name').value = spot.name;
-                    document.getElementById('city').value = spot.city;
-                    document.getElementById('seats').value = spot.seats;
-                    document.getElementById('wifi').value = spot.wifi;
-                    document.getElementById('noise').value = spot.noise;
-                }
-            });
-    </script>
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>Edit Study Spot</h1>
+      <p id="editingWhat">Loading…</p>
+    </div>
+    <a class="btn btn-ghost" href="/spots">
+      <svg class="icon icon-sm"><use href="#i-back"/></svg> Back to spots
+    </a>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell form-wrap">
+    <div class="card form-card">
+
+      <div id="notFound" class="empty hidden">
+        <svg class="icon"><use href="#i-alert"/></svg>
+        That spot no longer exists. <a href="/spots">Back to all spots</a>.
+      </div>
+
+      <form id="editForm" method="POST">
+        <div class="field-grid">
+          <div class="field full">
+            <label for="name">Spot name</label>
+            <input type="text" id="name" name="name" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="city">City / location</label>
+            <input type="text" id="city" name="city" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <label for="seats">Seats available</label>
+            <input type="number" id="seats" name="seats" min="0" max="9999" required>
+          </div>
+
+          <div class="field">
+            <label for="wifi">Wi-Fi</label>
+            <select id="wifi" name="wifi">
+              <option value="Available">Available</option>
+              <option value="No Wi-Fi">No Wi-Fi</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="noise">Noise level</label>
+            <select id="noise" name="noise">
+              <option value="Quiet">Quiet</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Loud">Loud</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="hours">Opening hours <span class="muted">(optional)</span></label>
+            <input type="text" id="hours" name="hours" maxlength="60" placeholder="e.g. 8:00 AM - 6:00 PM">
+          </div>
+
+          <div class="field full">
+            <label for="description">Description <span class="muted">(optional)</span></label>
+            <textarea id="description" name="description" maxlength="400"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg class="icon icon-sm"><use href="#i-check"/></svg> Save Changes
+          </button>
+          <a class="btn btn-ghost" href="/spots">Cancel</a>
+          <span class="spacer"></span>
+        </div>
+      </form>
+
+      <form id="deleteForm" method="POST" data-confirm="Delete this spot? This also removes its reviews."
+            style="margin-top:14px">
+        <button type="submit" class="btn btn-danger">
+          <svg class="icon icon-sm"><use href="#i-trash"/></svg> Delete this spot
+        </button>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>

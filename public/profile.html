@@ -1,38 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style.css">
-    <title>User Profile - StudySpot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — StudySpot</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/profile.css">
+<script src="/js/ui.js" defer></script>
+<script src="/js/profile.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>StudySpot</h1>
-        <nav>
-            <a href="/studyspot">Home</a> | 
-            <a href="/spots">Spots</a> | 
-            <a href="/profile">Profile</a> | 
-            <a href="/">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>My Profile</h2>
-        <div id="profile-container"></div>
-    </main>
-    <script>
-        fetch('/api/user-profile')
-            .then(res => res.json())
-            .then(user => {
-                const container = document.getElementById('profile-container');
-                if (!user || !user.username) {
-                    container.innerHTML = '<p>Please log in.</p>';
-                    return;
-                }
-                container.innerHTML = `
-                    <p><strong>Username:</strong> ${user.username}</p>
-                    <p><strong>Role:</strong> ${user.role}</p>
-                `;
-            });
-    </script>
+
+<header data-topbar=""></header>
+
+<div class="page-head">
+  <div class="shell">
+    <div>
+      <h1>My Profile</h1>
+      <p>Your account and everything you've contributed.</p>
+    </div>
+    <a class="btn btn-ghost" href="/logout">
+      <svg class="icon icon-sm"><use href="#i-logout"/></svg> Log out
+    </a>
+  </div>
+</div>
+
+<main class="page-body">
+  <div class="shell profile-layout">
+
+    <aside class="card card-pad profile-card" id="identity">
+      <div class="skeleton" style="height:150px;border:none"></div>
+    </aside>
+
+    <section>
+      <div class="stat-row" id="stats">
+        <div class="stat">
+          <svg class="icon icon-lg"><use href="#i-pin"/></svg>
+          <div class="num" id="statSpots">—</div>
+          <div class="lbl">Spots published</div>
+        </div>
+        <div class="stat">
+          <svg class="icon icon-lg"><use href="#i-doc"/></svg>
+          <div class="num" id="statPending">—</div>
+          <div class="lbl">Awaiting approval</div>
+        </div>
+        <div class="stat">
+          <svg class="icon icon-lg"><use href="#i-star"/></svg>
+          <div class="num" id="statReviews">—</div>
+          <div class="lbl">Reviews written</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <svg class="icon"><use href="#i-doc"/></svg>
+        <h2>My spot requests</h2>
+      </div>
+      <div class="list" id="myPending"></div>
+
+      <div class="section-head" style="margin-top:30px">
+        <svg class="icon"><use href="#i-pin"/></svg>
+        <h2>Spots I added</h2>
+      </div>
+      <div class="list" id="mySpots"></div>
+
+      <div class="section-head" style="margin-top:30px">
+        <svg class="icon"><use href="#i-star"/></svg>
+        <h2>My reviews</h2>
+      </div>
+      <div class="review-list" id="myReviews"></div>
+    </section>
+
+  </div>
+</main>
+
+<footer data-footer></footer>
 </body>
 </html>
