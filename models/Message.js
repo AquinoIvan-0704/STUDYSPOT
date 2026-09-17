@@ -1,18 +1,25 @@
-const store = require('../lib/store');
+const path = require('path');
+const fs = require('fs');
 
-const COLLECTION = 'messages';
+const MESSAGES_FILE = path.join(__dirname, '../data/messages.json');
 
 /** Messages sent from the Contact page. Admins read them on /admin/pending. */
 const Message = {
-    getAll: async function () {
-        const all = await store.readAll(COLLECTION);
-        return all.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    getAll: function () {
+        if (!fs.existsSync(MESSAGES_FILE)) {
+            this.saveAll([]);
+            return [];
+        }
+        const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
+        return data ? JSON.parse(data) : [];
     },
 
-    saveAll: (messages) => store.writeAll(COLLECTION, messages),
+    saveAll: function (messages) {
+        fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+    },
 
-    create: async function (data) {
-        const messages = await store.readAll(COLLECTION);
+    create: function (data) {
+        const messages = this.getAll();
         const message = {
             id: String(Date.now()),
             name: String(data.name || '').trim().slice(0, 80),
@@ -22,16 +29,16 @@ const Message = {
             fromUser: data.fromUser || '',
             createdAt: new Date().toISOString()
         };
-        messages.push(message);
-        await this.saveAll(messages);
+        messages.unshift(message);            // newest first
+        this.saveAll(messages);
         return message;
     },
 
-    remove: async function (id) {
-        const messages = await store.readAll(COLLECTION);
+    remove: function (id) {
+        const messages = this.getAll();
         const next = messages.filter(m => String(m.id) !== String(id));
         const removed = next.length !== messages.length;
-        if (removed) await this.saveAll(next);
+        if (removed) this.saveAll(next);
         return removed;
     }
 };

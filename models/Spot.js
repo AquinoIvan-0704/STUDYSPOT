@@ -1,17 +1,11 @@
-const store = require('../lib/store');
+const path = require('path');
+const fs = require('fs');
 
-const COLLECTION = 'spots';
+const SPOTS_FILE = path.join(__dirname, '../data/spots.json');
 
 /** Wi-Fi / noise values are normalised so the UI always gets known strings. */
 function normaliseWifi(value) {
     return String(value || '').toLowerCase().includes('available') ? 'Available' : 'No Wi-Fi';
-}
-
-function normaliseNoise(value) {
-    const v = String(value || '').toLowerCase();
-    if (v.includes('quiet')) return 'Quiet';
-    if (v.includes('loud'))  return 'Loud';
-    return 'Moderate';
 }
 
 /** Only allow an http(s) link or a site-relative path as an image. */
@@ -21,20 +15,38 @@ function safeImage(value) {
     return /^(https?:\/\/|\/)/i.test(v) ? v.slice(0, 500) : '';
 }
 
-const Spot = {
-    getAll: () => store.readAll(COLLECTION),
-    saveAll: (spots) => store.writeAll(COLLECTION, spots),
+function normaliseNoise(value) {
+    const v = String(value || '').toLowerCase();
+    if (v.includes('quiet')) return 'Quiet';
+    if (v.includes('loud'))  return 'Loud';
+    return 'Moderate';
+}
 
-    findById: async function (id) {
-        const spots = await this.getAll();
-        return spots.find(spot => String(spot.id) === String(id));
+const Spot = {
+    getAll: function () {
+        if (!fs.existsSync(SPOTS_FILE)) {
+            this.saveAll([]);
+            return [];
+        }
+        const data = fs.readFileSync(SPOTS_FILE, 'utf8');
+        return data ? JSON.parse(data) : [];
+    },
+
+    saveAll: function (spots) {
+        fs.writeFileSync(SPOTS_FILE, JSON.stringify(spots, null, 2));
+    },
+
+    findById: function (id) {
+        return this.getAll().find(spot => String(spot.id) === String(id));
     },
 
     /** Highest id + 1 — safe even after spots in the middle have been deleted. */
-    nextId: (spots) => spots.reduce((max, s) => Math.max(max, Number(s.id) || 0), 0) + 1,
+    nextId: function (spots) {
+        return spots.reduce((max, s) => Math.max(max, Number(s.id) || 0), 0) + 1;
+    },
 
-    create: async function (spotData) {
-        const spots = await this.getAll();
+    create: function (spotData) {
+        const spots = this.getAll();
         const newSpot = {
             id: this.nextId(spots),
             name: String(spotData.name || '').trim(),
@@ -49,12 +61,12 @@ const Spot = {
             createdAt: new Date().toISOString()
         };
         spots.push(newSpot);
-        await this.saveAll(spots);
+        this.saveAll(spots);
         return newSpot;
     },
 
-    update: async function (id, updatedData) {
-        const spots = await this.getAll();
+    update: function (id, updatedData) {
+        const spots = this.getAll();
         let updated = null;
 
         const next = spots.map(spot => {
@@ -76,25 +88,26 @@ const Spot = {
             return updated;
         });
 
-        if (updated) await this.saveAll(next);
+        this.saveAll(next);
         return updated;
     },
 
-    remove: async function (id) {
-        const spots = await this.getAll();
+    remove: function (id) {
+        const spots = this.getAll();
         const next = spots.filter(spot => String(spot.id) !== String(id));
         const removed = next.length !== spots.length;
-        if (removed) await this.saveAll(next);
+        if (removed) this.saveAll(next);
         return removed;
     },
 
-    search: async function (query) {
+    search: function (query) {
         const q = String(query || '').trim().toLowerCase();
-        const spots = await this.getAll();
+        const spots = this.getAll();
         if (!q) return spots;
         return spots.filter(spot =>
             String(spot.name).toLowerCase().includes(q) ||
-            String(spot.city).toLowerCase().includes(q));
+            String(spot.city).toLowerCase().includes(q)
+        );
     }
 };
 

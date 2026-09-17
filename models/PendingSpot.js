@@ -1,21 +1,31 @@
-const store = require('../lib/store');
+const path = require('path');
+const fs = require('fs');
 
-const COLLECTION = 'pending_spots';
+const PENDING_FILE = path.join(__dirname, '../data/pending_spots.json');
 
-/** Spot requests submitted by regular members, waiting for admin approval. */
+/** Spot requests submitted by regular users, waiting for admin approval. */
 const PendingSpot = {
-    getAll: () => store.readAll(COLLECTION),
-    saveAll: (spots) => store.writeAll(COLLECTION, spots),
-
-    findById: async function (id) {
-        const spots = await this.getAll();
-        return spots.find(spot => String(spot.id) === String(id));
+    getAll: function () {
+        if (!fs.existsSync(PENDING_FILE)) {
+            this.saveAll([]);
+            return [];
+        }
+        const data = fs.readFileSync(PENDING_FILE, 'utf8');
+        return data ? JSON.parse(data) : [];
     },
 
-    create: async function (spotData) {
-        const spots = await this.getAll();
+    saveAll: function (spots) {
+        fs.writeFileSync(PENDING_FILE, JSON.stringify(spots, null, 2));
+    },
+
+    findById: function (id) {
+        return this.getAll().find(spot => String(spot.id) === String(id));
+    },
+
+    create: function (spotData) {
+        const spots = this.getAll();
         const newSpot = {
-            id: String(Date.now()),
+            id: Date.now(),
             name: String(spotData.name || '').trim(),
             city: String(spotData.city || '').trim(),
             seats: Math.max(0, Number(spotData.seats) || 0),
@@ -24,26 +34,25 @@ const PendingSpot = {
             hours: spotData.hours ? String(spotData.hours).trim() : '',
             description: spotData.description ? String(spotData.description).trim() : '',
             image: String(spotData.image || '').trim().slice(0, 500),
-            submittedBy: spotData.submittedBy || '',     // kept so the admin sees who asked
+            submittedBy: spotData.submittedBy || '',      // kept so the admin sees who asked
             requestedAt: new Date().toISOString()
         };
         spots.push(newSpot);
-        await this.saveAll(spots);
+        this.saveAll(spots);
         return newSpot;
     },
 
-    remove: async function (id) {
-        const spots = await this.getAll();
+    remove: function (id) {
+        const spots = this.getAll();
         const next = spots.filter(spot => String(spot.id) !== String(id));
         const removed = next.length !== spots.length;
-        if (removed) await this.saveAll(next);
+        if (removed) this.saveAll(next);
         return removed;
     },
 
-    countBy: async function (username) {
+    countBy: function (username) {
         if (!username) return 0;
-        const spots = await this.getAll();
-        return spots.filter(s =>
+        return this.getAll().filter(s =>
             String(s.submittedBy).toLowerCase() === String(username).toLowerCase()).length;
     }
 };

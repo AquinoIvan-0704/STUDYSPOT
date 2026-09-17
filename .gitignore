@@ -1,8 +1,3 @@
 node_modules
 .env
-.env.local
 *.msi
-.vercel
-serviceAccount*.json
-firebase-debug.log
-firestore-debug.log
